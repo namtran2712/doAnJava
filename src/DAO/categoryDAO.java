@@ -1,0 +1,55 @@
+package DAO;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import DTO.categoryDTO;
+import database.databaseUtil;
+
+public class categoryDAO implements daoInterface<categoryDTO> {
+
+    @Override
+    public boolean delete(categoryDTO t) {
+        return true;
+    }   
+
+    @Override
+    public boolean insert(categoryDTO t) {
+        return true;
+    }
+
+    @Override
+    public ArrayList<categoryDTO> selectAll() {
+        Connection conc = databaseUtil.getConnection();
+        ArrayList<categoryDTO> result = new ArrayList<>();
+        try {
+            Statement stmt = conc.createStatement();
+            String sql = "SELECT * FROM category ";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                categoryDTO category = new categoryDTO(rs.getInt(1), rs.getString(2));
+                result.add(category);
+            }
+            databaseUtil.closeConnection(conc);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+
+    @Override
+    public ArrayList<categoryDTO> selectByCondition(String condition) {
+        return null;
+    }
+
+    @Override
+    public boolean update(categoryDTO t) {
+        return true;
+    }
+
+}
