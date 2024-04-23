@@ -2,6 +2,7 @@ package DTO;
 
 import java.sql.Date;
 import java.util.ArrayList;
+
 @SuppressWarnings("unused")
 
 public class productDTO {

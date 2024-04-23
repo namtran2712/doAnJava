@@ -7,6 +7,8 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import DTO.listProductCategory;
+import BUS.productBUS;
 import DTO.categoryDTO;
 import DTO.productDTO;
 import DTO.materialDTO;
@@ -58,7 +60,7 @@ public class Viewtrangchu extends JFrame {
 	private JTextField textField_1;
 	private JPanel container;
 	CardLayout card;
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -72,7 +74,6 @@ public class Viewtrangchu extends JFrame {
 		});
 	}
 
-	@SuppressWarnings("rawtypes")
 	public Viewtrangchu(String username) throws Exception {
 		setBackground(new Color(255, 255, 255));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -195,15 +196,29 @@ public class Viewtrangchu extends JFrame {
 		JPanel item = new JPanel(new GridLayout(0, 3));
 		showitem_Product.setViewportView(item);
 
+		productBUS listProduct = new productBUS();
 		int index = 0;
-	
-		// while (index < products.size()) {
-		// 	item.add(new item().createItem(products.get(index).getName(),
-		// 			products.get(index).getParticularProducts().get(0).getPrice(),
-		// 			listCategories.getCategory(products.get(index).getIdCategory()),
-		// 			products.get(index).getLinkImg()));
-		// 	index++;
-		// }
+		while (index < listProduct.getQuantityProducts()) {
+			productDTO product = listProduct.getProduct(index);
+			String name = product.getName()	;
+			String img = product.getLinkImg();
+			String price = listProduct.getDefaultPrice(product);
+			String category = listProduct.getCategoryProduct(product.getIdCategory());
+			JPanel itempanel = new item().createItem(name, price, category, img);
+			int id = index;
+			itempanel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					super.mousePressed(e);
+					showProduct sw = new showProduct();
+					sw.showSanPham(product,id);
+
+				}
+
+			});
+			item.add(itempanel);
+			index++;
+		}
 		JPanel formthongtin = new JPanel();
 		formthongtin.setPreferredSize(new Dimension(300, 10));
 		banhang.add(formthongtin, BorderLayout.EAST);
@@ -270,7 +285,7 @@ public class Viewtrangchu extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		thongtinsanpham.add(scrollPane);
 
-		JList listProduct = new JList<String>();
+	
 
 		JPanel thanhtoan = new JPanel();
 		thanhtoan.setPreferredSize(new Dimension(10, 50));
@@ -289,42 +304,34 @@ public class Viewtrangchu extends JFrame {
 		JPanel sanphamView = new JPanel();
 		sanphamView = new sanphamGUI().View();
 		container.add(sanphamView, "sản phẩm");
-		sanphamView.setLayout(null);
 
 		JPanel nhanvienView = new JPanel();
 		nhanvienView = new Viewnhanvien().View();
 		container.add(nhanvienView, "nhân viên");
-		// nhanvienView.setLayout(null);
 
 		JPanel nhaphangView = new JPanel();
 		nhaphangView = new Viewnhaphang().nhaphang();
 		container.add(nhaphangView, "nhập hàng");
-		// nhaphangView.setLayout(null);
 
 		JPanel phieuxuatView = new JPanel();
 		phieuxuatView = new Viewphieuxuat().View();
 		container.add(phieuxuatView, "phiếu xuất");
-		// phieuxuatView.setLayout(null);
 
 		JPanel phieunhapView = new JPanel();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
-		// phieunhapView.setLayout(null);
 
 		JPanel tonkhoView = new JPanel();
 		tonkhoView = new Viewtonkho().View();
 		container.add(tonkhoView, "tồn kho");
-		// tonkhoView.setLayout(null);
 
 		JPanel thongkeView = new JPanel();
 		container.add(thongkeView, "thống kê");
 		thongkeView = new Viewthongke().View();
-		// thongkeView.setLayout(null);
 
 		JPanel taikhoanView = new JPanel();
 		taikhoanView = new Viewtaikhoan().view();
 		container.add(taikhoanView, "tài khoản");
-		// taikhoanView.setLayout(null);
 		setVisible(true);
 	}
 

@@ -1,19 +1,38 @@
 package GUI;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
+import DTO.particularProduct;
+import DTO.productDTO;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.*;
+
+import BUS.productBUS;
 
 public class showProduct extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private JLabel lblNewLabel;
+	private JLabel lblNewLabel_4;
+	private JPanel SizeMenu;
+	private ArrayList<JButton> listSize;
+	productBUS pbus = new productBUS();
 
-	public JDialog showSanPham(String img, String category, String material, String name, String price,
-			int quantityProduct, int quantityRemain) {
+	public JDialog showSanPham (productDTO product,int index) {
+		String name = product.getName();
+		String material = pbus.getMaterialProduct(product.getIdMaterial());
+		String img = product.getLinkImg();
+		String price = pbus.getDefaultPrice(product);	
+		String category = pbus.getCategoryProduct(product.getIdCategory());
+		int quantitySold = product.getQuantitySold();
+		int quantityRemain = product.getParticularProducts().get(0).getQuantityRemain();
+		
+		
 		JDialog contentPane;
+		
 		contentPane = new JDialog(this, "Chi tiết");
 		contentPane.setSize(500, 850);
 		contentPane.setLocationRelativeTo(null);
@@ -47,7 +66,7 @@ public class showProduct extends JFrame {
 		lblNewLabel_1.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		panel.add(lblNewLabel_1);
 
-		JLabel lblNewLabel_3 = new JLabel("Đã bán: " + quantityProduct);
+		JLabel lblNewLabel_3 = new JLabel("Đã bán: " + quantitySold);
 		lblNewLabel_3.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		panel.add(lblNewLabel_3);
 
@@ -60,14 +79,14 @@ public class showProduct extends JFrame {
 		lblNewLabel_2.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		panel_1.add(lblNewLabel_2);
 
-		JLabel lblNewLabel_4 = new JLabel("Còn lại: " + quantityRemain);
+		lblNewLabel_4 = new JLabel("Còn lại: " + quantityRemain);
 		lblNewLabel_4.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		panel_1.add(lblNewLabel_4);
 
-		JLabel lblNewLabel = new JLabel(price + "₫");
+		lblNewLabel = new JLabel(price + "₫");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 25));
-		lblNewLabel.setBounds(50, 732, 400, 50);
+		lblNewLabel.setBounds(50, 770, 400, 50);
 		contentPane.add(lblNewLabel);
 
 		JTextArea nameProduct = new JTextArea(name);
@@ -79,9 +98,55 @@ public class showProduct extends JFrame {
 		nameProduct.setEnabled(false);
 		nameProduct.setDisabledTextColor(Color.black);
 		contentPane.add(nameProduct);
+
+		SizeMenu = new JPanel(new GridLayout(1, 0, 5, 0));
+		SizeMenu.setBounds(50, 710, 400, 50);
+		listSize = new ArrayList<>();
+
+		int sizecnt = 0;
+		ArrayList <particularProduct> particularProducts =product.getParticularProducts();
+		while (sizecnt < particularProducts.size()) {
+			JButton tmp = new JButton(particularProducts.get(sizecnt).getSize() + "");
+			tmp.setCursor(new Cursor(12));
+			tmp.setBackground(Color.white);
+			tmp.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println(e.getActionCommand());
+					int size = Integer.parseInt(e.getActionCommand());
+					String price = pbus.getPrice(index, size);
+					int quantityRemain = pbus.quantitySize(index, size);
+					changeInfor(size, price, quantityRemain);
+				}
+			});
+			listSize.add(tmp);
+			sizecnt++;
+		}
+		listSize.get(0).setBackground(Color.decode("#FFCAD4"));
+		for (JButton tmp : listSize) {
+			SizeMenu.add(tmp);
+		}
+		contentPane.add(SizeMenu);
+
 		contentPane.setModal(true);
 		contentPane.setVisible(true);
+
 		return contentPane;
+
+	}
+
+	void changeInfor(int size, String price, int quantityRemain) {
+		for (JButton tmp : listSize) {
+			tmp.setBackground(Color.white);
+			if (tmp.getText().equals(String.valueOf(size))) {
+				System.out.println(tmp.getText());
+				tmp.setBackground(Color.decode("#FFCAD4"));
+				lblNewLabel.setText(price + "₫");
+				lblNewLabel_4.setText("Còn lại: " + quantityRemain);
+
+			}
+
+		}
 
 	}
 }

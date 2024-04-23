@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 
@@ -8,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import BUS.productBUS;
-import DTO.listProductCategory;
 import DTO.categoryDTO;
 import DTO.productDTO;
 // import controller.productcontroller;
@@ -39,13 +39,13 @@ public class sanphamGUI extends JFrame {
 		sanphamFrame.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(sanphamFrame);
-		sanphamFrame.setLayout(null);
-		sanphamFrame.add(new menuChucNang().createmenuChucNang());
+		sanphamFrame.setLayout(new BorderLayout());
+		sanphamFrame.add(new menuChucNang().createmenuChucNang(), BorderLayout.NORTH);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getVerticalScrollBar().setUnitIncrement(15);
 		scrollPane.setBounds(0, 118, 1086, 600);
-		sanphamFrame.add(scrollPane);
+		sanphamFrame.add(scrollPane, BorderLayout.CENTER);
 
 		JPanel panel = new JPanel();
 		scrollPane.setViewportView(panel);
@@ -57,22 +57,17 @@ public class sanphamGUI extends JFrame {
 		while (index < listProduct.getQuantityProducts()) {
 			productDTO product = listProduct.getProduct(index);
 			String name = product.getName();
-			String material = listProduct.getMaterialProduct(product.getIdMaterial() - 1);
 			String img = product.getLinkImg();
-			String price = listProduct.getDefaultPrice(index);
-			String category = listProduct.getCategoryProduct(product.getIdCategory() - 1);
-			int quantitySold = product.getQuantitySold();
-			int quantityRemain = product.getParticularProducts().get(0).getQuantityRemain();
+			String price = listProduct.getDefaultPrice(product);
+			String category = listProduct.getCategoryProduct(product.getIdCategory());
 			JPanel itempanel = new item().createItem(name, price, category, img);
-
+			int id =index;
 			itempanel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {
 					super.mousePressed(e);
-					System.out.println(1);
-					System.out.println(e);
 					showProduct sw = new showProduct();
-					sw.showSanPham(img, category, material, name, price, quantitySold, quantityRemain);
+					sw.showSanPham(product,id);
 
 				}
 

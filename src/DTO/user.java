@@ -7,7 +7,7 @@ public class user {
 	protected String name;
 	protected String phoneNumber;
 	protected Date birthday;
-	
+
 	public user(int id, String name, String phoneNumber, Date birthday) {
 		super();
 		this.id = id;
@@ -15,7 +15,7 @@ public class user {
 		this.phoneNumber = phoneNumber;
 		this.birthday = birthday;
 	}
-	
+
 	public user() {
 	}
 

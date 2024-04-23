@@ -9,7 +9,7 @@ public class materialBUS {
     ArrayList<materialDTO> listMaterial;
     materialDAO mdao;
 
-    public materialBUS() throws Exception {
+    public materialBUS() {
         listMaterial =new ArrayList<>();
         mdao =new materialDAO();
         loadMaterial ();
@@ -20,9 +20,9 @@ public class materialBUS {
         listMaterial =mdao.selectAll();
     }
 
-    public String getMaterial (int id)
+    public String getMaterial (int index)
     {
-        return listMaterial.get(id).getMaterial();
+        return listMaterial.get(index-1).getMaterial();
     }
 
     public ArrayList <materialDTO> getListMaterial ()

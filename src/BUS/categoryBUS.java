@@ -10,7 +10,7 @@ public class categoryBUS {
     ArrayList<categoryDTO> listCategory;
     categoryDAO cateDao;
 
-    public categoryBUS() throws Exception {
+    public categoryBUS() {
         listCategory = new ArrayList<>();
         cateDao = new categoryDAO();
         loadCategory();
@@ -20,8 +20,8 @@ public class categoryBUS {
         listCategory = cateDao.selectAll();
     }
 
-    public String getCategory(int id){
-        return listCategory.get(id).getCategoryName();
+    public String getCategory(int index){
+        return listCategory.get(index-1).getCategoryName();
     }
 
     public ArrayList <categoryDTO> getListCategory ()

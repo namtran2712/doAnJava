@@ -71,6 +71,7 @@ public class productDao implements daoInterface<productDTO> {
                     tmp.setQuantitySold(rs.getInt("QUANTITY_SOLD"));
                     tmp.setLinkImg(rs.getString("LINK_IMAGE"));
                     currentId = rs.getInt("ID_PRODUCT");
+                    tmp.setParticularProducts(rs.getInt("SIZE"), rs.getFloat("PRICE"),rs.getInt("QUANTITY_REMAIN"));
                     result.add(tmp);
                     currentId = tmp.getIdProduct();
                     // System.out.println(tmp.getLinkImg());

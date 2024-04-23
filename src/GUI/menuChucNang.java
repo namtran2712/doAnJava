@@ -59,10 +59,10 @@ public class menuChucNang extends JFrame {
 		search_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		chucNang.add(search_btn);
 
-		see_btn = new JLabel("Xem chi tiết");
+		see_btn = new JLabel("Thêm");
 		see_btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		see_btn.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-		see_btn.setIcon(new ImageIcon("src\\icon\\see.png"));
+		see_btn.setIcon(new ImageIcon("src\\icon\\add.png"));
 		see_btn.setHorizontalTextPosition(SwingConstants.CENTER);
 		see_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		chucNang.add(see_btn);
