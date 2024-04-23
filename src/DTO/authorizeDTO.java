@@ -1,10 +1,10 @@
 package DTO;
 
-public class authorize {
+public class authorizeDTO {
     private int idAuthorize;
     private String name;
 
-    public authorize(int idAuthorize, String name) {
+    public authorizeDTO(int idAuthorize, String name) {
         this.idAuthorize = idAuthorize;
         this.name = name;
     }

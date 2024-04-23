@@ -7,32 +7,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import DTO.authorize;
+import DTO.authorizeDTO;
 import database.databaseUtil;
 
-public class authorizeDao implements daoInterface<authorize> {
+public class authorizeDao implements daoInterface<authorizeDTO> {
 
     @Override
-    public boolean insert(authorize t) {
-        return true;
-        
+    public boolean insert(authorizeDTO t) {
+        return false;
     }
 
     @Override
-    public boolean delete(authorize t) {
-        return true;
-    }   
+    public boolean delete(authorizeDTO t) {
+        return false;
+    }
 
     @Override
-    public boolean update(authorize t) {
-        return true;
-    }   
+    public boolean update(authorizeDTO t) {
+        return false;
+    }
 
     @Override
-    public ArrayList<authorize> selectAll() {
+    public ArrayList<authorizeDTO> selectAll() {
         Connection conn = databaseUtil.getConnection();
 
-        ArrayList<authorize> list = new ArrayList<authorize>();
+        ArrayList<authorizeDTO> list = new ArrayList<authorizeDTO>();
         String sql = "SELECT * " +
                 "FROM AUTHORIZES";
         try {
@@ -41,7 +40,7 @@ public class authorizeDao implements daoInterface<authorize> {
             ResultSet result = pst.executeQuery();
 
             while (result.next()) {
-                authorize auth = new authorize(
+                authorizeDTO auth = new authorizeDTO(
                         result.getInt("ID_AUTHORIZE"),
                         result.getString("AUTHORIZE_NAME"));
                 list.add(auth);
@@ -56,11 +55,11 @@ public class authorizeDao implements daoInterface<authorize> {
     }
 
     @Override
-    public ArrayList<authorize> selectByCondition(String condition) {
+    public ArrayList<authorizeDTO> selectByCondition(String condition) {
         return null;
     }
 
-    public authorize selectByName(String name) {
+    public authorizeDTO selectByName(String name) {
         Connection conn = databaseUtil.getConnection();
 
         String sql = "SELECT * " +
@@ -72,7 +71,7 @@ public class authorizeDao implements daoInterface<authorize> {
             pst.setString(1, name);
             ResultSet result = pst.executeQuery();
             while (result.next()) {
-                authorize auth = new authorize(
+                authorizeDTO auth = new authorizeDTO(
                         result.getInt("ID_AUTHORIZE"),
                         result.getString("AUTHORIZE_NAME"));
                 return auth;

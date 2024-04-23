@@ -9,11 +9,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import DAO.accountDao;
+import BUS.staffBUS;
 import DAO.staffDao;
-import DTO.accountDTO;
-import DTO.staff;
-import DTO.staffManagement;
+import DTO.staffDTO;
 import controller.nhanVienController;
 
 import java.awt.BorderLayout;
@@ -30,12 +28,12 @@ public class Viewnhanvien extends JFrame {
 	@SuppressWarnings("unused")
 	private JTextField textField;
 	private DefaultTableModel model;
-	private JTable tableDataKh;
-	private staffManagement listStaff;
+	private JTable tableDataNV;
+	private staffBUS listStaff;
 	public menuChucNang chucnang;
 
 	public Viewnhanvien() {
-		listStaff = new staffManagement(new staffDao().selectAll());
+		listStaff = new staffBUS();
 	}
 
 	public JPanel View() {
@@ -50,15 +48,15 @@ public class Viewnhanvien extends JFrame {
 		panel.setLocation(0, 130);
 		panel.setSize(1020, 583);
 
-		tableDataKh = new JTable();
-		tableDataKh.setDefaultRenderer(Object.class, new defaulttablemode());
-		tableDataKh.setShowGrid(false);
-		tableDataKh.setRowHeight(30);
-		tableDataKh.setShowGrid(false);
-		tableDataKh.setRowHeight(30);
-		tableDataKh.addMouseListener(new nhanVienController(this));
+		tableDataNV = new JTable();
+		tableDataNV.setDefaultRenderer(Object.class, new defaulttablemode());
+		tableDataNV.setShowGrid(false);
+		tableDataNV.setRowHeight(30);
+		tableDataNV.setShowGrid(false);
+		tableDataNV.setRowHeight(30);
+		tableDataNV.addMouseListener(new nhanVienController(this));
 
-		tableDataKh.setDefaultRenderer(Object.class, new defaulttablemode());
+		tableDataNV.setDefaultRenderer(Object.class, new defaulttablemode());
 
 		model = new DefaultTableModel() {
 
@@ -68,7 +66,7 @@ public class Viewnhanvien extends JFrame {
 			}
 
 		};
-		tableDataKh.setModel(model);
+		tableDataNV.setModel(model);
 		model.addColumn("Stt");
 		model.addColumn("Id");
 		model.addColumn("Tên");
@@ -77,15 +75,15 @@ public class Viewnhanvien extends JFrame {
 		model.addColumn("Số điện thoại");
 		panel.setLayout(new GridLayout(1, 1, 20, 20));
 		model.setRowCount(25);
-		JScrollPane pane = new JScrollPane(tableDataKh);
+		JScrollPane pane = new JScrollPane(tableDataNV);
 		pane.setPreferredSize(new Dimension(1020, 583));
-		JTableHeader header = tableDataKh.getTableHeader();
+		JTableHeader header = tableDataNV.getTableHeader();
 
 		header.setFont(new Font("Arial", Font.ITALIC, 18));
 		header.setBackground(Color.pink);
 		header.setForeground(new Color(255, 0, 127));
 
-		TableColumnModel tableColumnModel = tableDataKh.getColumnModel();
+		TableColumnModel tableColumnModel = tableDataNV.getColumnModel();
 		tableColumnModel.getColumn(0).setPreferredWidth(70);
 		tableColumnModel.getColumn(1).setPreferredWidth(70);
 		tableColumnModel.getColumn(2).setPreferredWidth(400);
@@ -109,14 +107,14 @@ public class Viewnhanvien extends JFrame {
 		return viewPanel;
 	}
 
-	public JTable getTableDataKh() {
-		return tableDataKh;
+	public JTable getTableDataNV() {
+		return tableDataNV;
 	}
 
-	public void showInfo(ArrayList<staff> list) {
+	public void showInfo(ArrayList<staffDTO> list) {
 		model.setRowCount(0);
 		int i = 0;
-		for (staff s : list) {
+		for (staffDTO s : list) {
 
 			String formattedPrice = item.price(s.getSalary());
 
@@ -124,22 +122,18 @@ public class Viewnhanvien extends JFrame {
 					++i, s.getId(),
 					s.getName(),
 					s.getBirthday(),
-					formattedPrice + "đ",
+					formattedPrice,
 					s.getPhoneNumber()
 			});
 		}
 	}
 
-	public void deleteModel(int i) {
-		staff st = listStaff.getListStaff().get(i);
-		listStaff.delete(i);
-		int id = st.getId();
-		new accountDao().delete(new accountDTO(id, null, st, getWarningString(), getName()));
-		model.removeRow(i);
+	public staffBUS getListStaff() {
+		return listStaff;
 	}
 
-	public staffManagement getListStaff() {
-		return listStaff;
+	public void setListStaff(staffBUS listStaff) {
+		this.listStaff = listStaff;
 	}
 
 	public void reloadData() {

@@ -2,18 +2,17 @@ package DTO;
 
 import java.sql.Date;
 
-
-public class staff extends user {
+public class staffDTO extends user {
 	private float salary;
 	private String dateStart;
 
-	public staff(int id, String name, String phoneNumber, Date birthday, float salary, String dateStart) {
+	public staffDTO(int id, String name, String phoneNumber, Date birthday, float salary, String dateStart) {
 		super(id, name, phoneNumber, birthday);
 		this.salary = salary;
 		this.dateStart = dateStart;
 	}
 
-	public staff() {
+	public staffDTO() {
 		super();
 	}
 

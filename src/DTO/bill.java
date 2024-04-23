@@ -4,13 +4,13 @@ import java.sql.Date;
 
 public class bill {
 	private int idBill;
-	private staff Staff;
-	private customer Customer;
+	private staffDTO Staff;
+	private customerDTO Customer;
 	private float total;
 	private Date dateBill;
 	private particularBill detail;
 
-	public bill(int idBill, staff staff, customer customer, float total, Date dateBill, particularBill detail) {
+	public bill(int idBill, staffDTO staff, customerDTO customer, float total, Date dateBill, particularBill detail) {
 		this.idBill = idBill;
 		Staff = staff;
 		Customer = customer;
@@ -30,19 +30,19 @@ public class bill {
 		this.idBill = idBill;
 	}
 
-	public staff getStaff() {
+	public staffDTO getStaff() {
 		return Staff;
 	}
 
-	public void setStaff(staff staff) {
+	public void setStaff(staffDTO staff) {
 		Staff = staff;
 	}
 
-	public customer getCustomer() {
+	public customerDTO getCustomer() {
 		return Customer;
 	}
 
-	public void setCustomer(customer customer) {
+	public void setCustomer(customerDTO customer) {
 		Customer = customer;
 	}
 

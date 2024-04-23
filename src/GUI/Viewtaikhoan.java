@@ -15,9 +15,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+import BUS.accountBUS;
 import DAO.accountDao;
 import DTO.accountDTO;
-import DTO.accountManagement;
 import controller.taiKhoanController;
 
 public class Viewtaikhoan extends JFrame {
@@ -25,11 +25,11 @@ public class Viewtaikhoan extends JFrame {
     private JPanel viewPanel;
     private DefaultTableModel model;
     private JTable tableAccount;
-    private accountManagement listAccount;
+    private accountBUS listAccount;
     public menuChucNang chucnang;
 
     public Viewtaikhoan() {
-        listAccount = new accountManagement(new accountDao().selectAll());
+        listAccount = new accountBUS();
     }
 
     public JPanel view() {
@@ -101,6 +101,10 @@ public class Viewtaikhoan extends JFrame {
         chucnang.search_btn.addMouseListener(new taiKhoanController(this));
         chucnang.textField.addKeyListener(new taiKhoanController(this));
         chucnang.comboBox.addActionListener(new taiKhoanController(this));
+        chucnang.comboBox.removeAllItems();
+        chucnang.comboBox.addItem("Tất cả");
+        chucnang.comboBox.addItem("Theo username");
+        chucnang.comboBox.addItem("Theo id");
 
         return viewPanel;
     }
@@ -109,8 +113,12 @@ public class Viewtaikhoan extends JFrame {
         return tableAccount;
     }
 
-    public accountManagement getListAccount() {
+    public accountBUS getListAccount() {
         return listAccount;
+    }
+
+    public void setListAccount(accountBUS listAccount) {
+        this.listAccount = listAccount;
     }
 
     public void showInfo(ArrayList<accountDTO> list) {
@@ -126,14 +134,6 @@ public class Viewtaikhoan extends JFrame {
                     acc.getPassword()
             });
         }
-    }
-
-    public void deleteModel(int i) {
-        accountDTO st = listAccount.getListAccount().get(i);
-        listAccount.delete(i);
-        int id = st.getIdAccount();
-        new accountDao().delete(new accountDTO(id, null, null, getWarningString(), getName()));
-        model.removeRow(i);
     }
 
     public void reloadData() {

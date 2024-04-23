@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -11,7 +12,12 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-import DAO.formRegisterValidate;
+import BUS.accountBUS;
+import BUS.staffBUS;
+import BUS.validateBUS;
+import DTO.accountDTO;
+import DTO.authorizeDTO;
+import DTO.staffDTO;
 import GUI.formLoginView;
 import GUI.formRegisterView;
 
@@ -42,98 +48,52 @@ public class formButtonRegisterController implements ActionListener, KeyListener
 		return false;
 	}
 
-	public boolean checkPhone(String phoneNumber) {
-		if (phoneNumber.length() != 10) {
-			return false;
-		} else {
-			char[] phone = phoneNumber.toCharArray();
-			if (phone[0] != '0') {
-				return false;
-			}
-			for (int i = 1; i < phone.length; i++) {
-				if (!Character.isDigit(phone[i])) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	public boolean checkName(String name) {
-		String regex = "[\\p{L}\\s]+"; // Phù hợp với tên tiếng Việt có dấu và không dấu
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(name);
-
-		if (matcher.matches()) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean checkUsername(String userName) {
-		String regex = "^[a-z][a-z0-9]+$";
-		Pattern pattern = Pattern.compile(regex);
-
-		Matcher matcher = pattern.matcher(userName);
-
-		if (matcher.matches()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public boolean checkAge(int age) {
-		LocalDateTime now = LocalDateTime.now();
-		return now.getYear() - age >= 17;
-	}
-
 	public void register() {
 		String fullName = this.view.getFieldFullName().getText();
 		String phoneNumber = this.view.getFieldPhoneNumber().getText();
 		String username = this.view.getFieldUser().getText();
 		String pass = String.valueOf(this.view.getPasswordField().getPassword());
+		Calendar calendar = this.view.getBirthdayChooser().getCalendar();
+		String birthday = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-"
+				+ calendar.get(Calendar.DAY_OF_MONTH);
 		if (checkEmpty(fullName, phoneNumber, username, pass)) {
 			JOptionPane.showMessageDialog(view, "Vui lòng điền đủ thông tin", "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
 		} else {
-			if (checkPhone(phoneNumber) && checkName(fullName)) {
-				if (checkUsername(username)) {
-					Calendar calendar = this.view.getBirthdayChooser().getCalendar();
-					int year = calendar.get(Calendar.YEAR);
-					if (checkAge(year)) {
-						String birthday = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-"
-								+ calendar.get(Calendar.DAY_OF_MONTH);
-						if (!formRegisterValidate.checkRegister(fullName, username, phoneNumber, pass, birthday)) {
-							JOptionPane.showMessageDialog(view, "Số điện thoại hoặc username đã tồn tại !!!",
-									"Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
-
-						} else {
-							formRegisterValidate.checkRegister(fullName, username, phoneNumber, pass, birthday);
-							JOptionPane.showMessageDialog(view, "Đăng ký thành công", "Success",
-									JOptionPane.PLAIN_MESSAGE);
-							view.dispose();
-							new formLoginView(username, pass);
-						}
-					} else {
-						JOptionPane.showMessageDialog(view, "Bạn chưa đủ 17 tuổi !!!", "Lỗi đăng ký",
-								JOptionPane.ERROR_MESSAGE);
-					}
+			authorizeDTO auth = new authorizeDTO(1, "STAFF");
+			Date date = Date.valueOf(birthday);
+			staffDTO staff = new staffDTO(0, fullName, phoneNumber, date, 0, "");
+			accountDTO acc = new accountDTO(0,
+					auth, staff, username, pass);
+			boolean check = new staffBUS().checkMatchPhone(acc.getNhanVien());
+			if (check) {
+				JOptionPane.showMessageDialog(view, "Số điện thoại đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				return;
+			} else {
+				if (new validateBUS().checkName(acc.getNhanVien().getName()) == false ||
+						new validateBUS().checkPhone(acc.getNhanVien().getPhoneNumber()) == false ||
+						new validateBUS().checkAge(acc.getNhanVien().getBirthday().toString()) == false) {
+					JOptionPane.showMessageDialog(view, "Vui lòng kiểm tra lại thông tin đăng kí", "Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				check = new accountBUS().checkRegister(acc);
+				if (check) {
+					JOptionPane.showMessageDialog(view, "Đăng kí thành công", "Thông báo",
+							JOptionPane.PLAIN_MESSAGE);
 
 				} else {
-					JOptionPane.showMessageDialog(view, "Username không chứa ký tự đặc biệt hoặc dấu !!!",
-							"Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(view, "Tên đăng kí đã tồn tại hoặc password không hợp lệ!!!",
+							"Cảnh báo",
+							JOptionPane.ERROR_MESSAGE);
 				}
-			} else {
-				JOptionPane.showMessageDialog(view, "Kiểm tra lại thông tin đăng ký !!!", "Lỗi đăng ký",
-						JOptionPane.ERROR_MESSAGE);
 			}
+
 		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
 			register();
 		}
 	}
