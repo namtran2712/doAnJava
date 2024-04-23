@@ -1,95 +1,121 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.staff;
+import DTO.staffDTO;
 import database.databaseUtil;
 
-public class staffDao implements daoInterface<staff> {
+public class staffDao implements daoInterface<staffDTO> {
 
 	@Override
-	public boolean insert(final staff t) {
+	public boolean insert(staffDTO t) {
 		try {
-			int rows = 0;
 			final Connection conn = databaseUtil.getConnection();
 			final Statement st = conn.createStatement();
-			final String sql = "INSERT INTO staff (FULLNAME, PHONE_NUMBER, BIRTHDAY, SALARY) "
+			final String sql = "INSERT INTO staff (FULLNAME, PHONE_NUMBER, BIRTHDAY) "
 					+ "VALUES ('" + t.getName() + "', '"
 					+ t.getPhoneNumber() + "', '"
-					+ t.getBirthday() + "', "
-					+ t.getSalary()
+					+ t.getBirthday() + "'"
 					+ ")";
-			System.out.println(sql);
-			rows = st.executeUpdate(sql);
+			int rows = st.executeUpdate(sql);
 			databaseUtil.closeConnection(conn);
-			return rows>0;
+			return rows > 0;
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
+	}
 
+	public staffDTO getLastInsert() {
+		Connection conn = databaseUtil.getConnection();
+
+		String sql = "SELECT * " +
+				"FROM STAFF " +
+				"ORDER BY ID_STAFF DESC " +
+				"LIMIT 1";
+
+		try {
+			PreparedStatement pst = conn.prepareStatement(sql);
+			ResultSet result = pst.executeQuery();
+			staffDTO staff;
+			while (result.next()) {
+				staff = new staffDTO(
+						result.getInt("ID_STAFF"),
+						result.getString("FULLNAME"),
+						result.getString("PHONE_NUMBER"),
+						result.getDate("BIRTHDAY"),
+						result.getFloat("SALARY"),
+						null);
+				return staff;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		databaseUtil.closeConnection(conn);
+		return null;
 	}
 
 	@Override
-	public boolean delete(final staff t) {
+	public boolean delete(final staffDTO t) {
 		final Connection conn = databaseUtil.getConnection();
-		int rows =0;
+
 		try {
 			final Statement state = conn.createStatement();
 
 			final String sql = "DELETE FROM STAFF " +
 					"WHERE ID_STAFF = " + t.getId();
 
-			System.out.println(sql);
-
-			 rows = state.executeUpdate(sql);
-
-			System.out.println("Số dòng được xóa: " + rows);
-			return rows>0;
+			final int rows = state.executeUpdate(sql);
+			return rows > 0;
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
-
 		databaseUtil.closeConnection(conn);
 		return false;
 	}
 
 	@Override
-	public boolean update(final staff t) {
+	public boolean update(final staffDTO t) {
 		final Connection conn = databaseUtil.getConnection();
 
 		try {
 			final Statement state = conn.createStatement();
-
-			final String sql = "UPDATE STAFF " +
-					"SET ID_STAFF = " + t.getId() +
-					" ,FULLNAME = '" + t.getName() + "'" +
-					" ,PHONE_NUMBER = '" + t.getPhoneNumber() + "'" +
-					" ,BIRTHDAY = '" + t.getBirthday() + "'" +
-					" ,SALARY = " + t.getSalary() +
-					" WHERE ID_STAFF = " + t.getId();
-
-			System.out.println(sql);
-
+			String sql;
+			if (t.getBirthday() == null) {
+				sql = "UPDATE STAFF " +
+						"SET ID_STAFF = " + t.getId() +
+						" ,FULLNAME = '" + t.getName() + "'" +
+						" ,PHONE_NUMBER = '" + t.getPhoneNumber() + "'" +
+						" ,SALARY = " + t.getSalary() +
+						" WHERE ID_STAFF = " + t.getId();
+			} else {
+				sql = "UPDATE STAFF " +
+						"SET ID_STAFF = " + t.getId() +
+						" ,FULLNAME = '" + t.getName() + "'" +
+						" ,PHONE_NUMBER = '" + t.getPhoneNumber() + "'" +
+						" ,BIRTHDAY = '" + t.getBirthday() + "'" +
+						" ,SALARY = " + t.getSalary() +
+						" WHERE ID_STAFF = " + t.getId();
+			}
 			final int rows = state.executeUpdate(sql);
-			return rows>0;
+			return rows > 0;
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
-
 		databaseUtil.closeConnection(conn);
 		return false;
 	}
 
 	@Override
-	public ArrayList<staff> selectAll() {
+	public ArrayList<staffDTO> selectAll() {
 		final Connection conn = databaseUtil.getConnection();
 
-		final ArrayList<staff> list = new ArrayList<staff>();
+		final ArrayList<staffDTO> list = new ArrayList<staffDTO>();
 
 		try {
 			final Statement state = conn.createStatement();
@@ -98,7 +124,7 @@ public class staffDao implements daoInterface<staff> {
 			final ResultSet rs = state.executeQuery(sql);
 
 			while (rs.next()) {
-				final staff st = new staff(rs.getInt("ID_STAFF"),
+				final staffDTO st = new staffDTO(rs.getInt("ID_STAFF"),
 						rs.getString("FULLNAME"),
 						rs.getString("PHONE_NUMBER"),
 						rs.getDate("BIRTHDAY"),
@@ -107,7 +133,6 @@ public class staffDao implements daoInterface<staff> {
 				list.add(st);
 			}
 		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -116,8 +141,7 @@ public class staffDao implements daoInterface<staff> {
 	}
 
 	@Override
-	public ArrayList<staff> selectByCondition(String condition) {
-		// TODO Auto-generated method stub
+	public ArrayList<staffDTO> selectByCondition(String condition) {
 		throw new UnsupportedOperationException("Unimplemented method 'selectByCondition'");
 	}
 

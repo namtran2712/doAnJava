@@ -16,7 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import DTO.customer;
+import DTO.customerDTO;
 import controller.khachHangController;
 
 public class ViewUpdateCustomer extends JFrame {
@@ -26,7 +26,7 @@ public class ViewUpdateCustomer extends JFrame {
     public int id;
     public JDialog content;
 
-    public JDialog view(customer s) {
+    public JDialog view(customerDTO s) {
         id = s.getId();
         content = new JDialog(this, "Sửa thông tin", false);
         content.setSize(500, 370);
@@ -91,13 +91,8 @@ public class ViewUpdateCustomer extends JFrame {
 
         content.setModalityType(ModalityType.MODELESS);
         content.setModal(true);
+        content.setVisible(true);
 
         return content;
     }
-
-    // public static void main(String[] args) {
-    // ViewUpdateCustomer a = new ViewUpdateCustomer();
-    // JDialog b = a.view(new customer(1, null, null, null));
-    // b.setVisible(true);
-    // }
 }

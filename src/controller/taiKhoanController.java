@@ -16,10 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import BUS.accountBUS;
+import BUS.staffBUS;
 import DAO.accountDao;
 import DAO.authorizeDao;
 import DTO.accountDTO;
-import DTO.authorize;
+import DTO.authorizeDTO;
 import GUI.ViewUpdateAccount;
 import GUI.Viewtaikhoan;
 
@@ -37,28 +39,37 @@ public class taiKhoanController implements MouseListener, ActionListener, KeyLis
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int i = view1.getTableAccount().getSelectedRow();
         JLabel btn = (JLabel) e.getComponent();
+        int i = view1.getTableAccount().getSelectedRow();
         if (btn.getText().equals("Xóa")) {
-            if (i >= 0) {
-                i += 1;
+            if (i == -1) {
+                JOptionPane.showMessageDialog(view1, "Bạn chưa chọn dòng để xóa", "Cảnh báo",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                int id = (int) view1.getTableAccount().getValueAt(i, 1);
                 int result = JOptionPane.showConfirmDialog(view1,
                         "Bạn có chắc muốn xóa không?",
                         "Xóa nhân viên", JOptionPane.YES_NO_CANCEL_OPTION);
-
                 if (result == JOptionPane.YES_OPTION) {
-                    int id = (int) view1.getTableAccount().getValueAt(i - 1, 1);
-                    new accountDao().delete(new accountDTO(id, null, null, null, null));
-                    view1.deleteModel(i - 1);
+                    boolean check = view1.getListAccount().deleteAccount(id);
+                    if (check == true) {
+                        JOptionPane.showMessageDialog(view1, "Xóa thành công", "Thông báo", JOptionPane.PLAIN_MESSAGE);
+                        view1.reloadData();
+                        view1.showInfo(view1.getListAccount().getListAccount());
+                    } else {
+                        JOptionPane.showMessageDialog(view1, "Xóa thất bại", "Thông báo", JOptionPane.PLAIN_MESSAGE);
+                    }
                 }
             }
         } else if (btn.getText().equals("Sửa")) {
-            if (i >= 0) {
+            if (i == -1) {
+                JOptionPane.showMessageDialog(view1, "Bạn chưa chọn dòng để sửa", "Cảnh báo",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
                 int id = (int) view1.getTableAccount().getValueAt(i, 1);
-                accountDTO acc = view1.getListAccount().findByID(id);
-                JDialog a = new ViewUpdateAccount().view(acc);
-                a.setVisible(true);
-                a.addWindowListener(new WindowAdapter() {
+                accountDTO a = view1.getListAccount().getInfo(id);
+                JDialog showUpdateDialog = new ViewUpdateAccount().view(a);
+                showUpdateDialog.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         view1.reloadData();
@@ -98,21 +109,24 @@ public class taiKhoanController implements MouseListener, ActionListener, KeyLis
                 JOptionPane.showMessageDialog(view2, "Không thể để trống các trường!!!", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
             } else {
-                accountDTO acc = new accountDao().selectByID(view2.id);
+
+                accountDTO acc = new accountBUS().getInfo(view2.id);
                 acc.setUsername(view2.textFieldUsername.getText());
                 acc.setPassword(view2.textFieldPassword.getText());
-                String vaiTro = (String) view2.comboBoxAuthorize.getSelectedItem();
-
-                authorize auth = new authorizeDao().selectByName(vaiTro);
-
-                acc.setVaiTro(auth);
 
                 int result = JOptionPane.showConfirmDialog(view2, "Bạn chắn chắn muốn sửa?", "Sửa thông tin",
                         JOptionPane.YES_NO_CANCEL_OPTION);
 
                 if (result == JOptionPane.YES_OPTION) {
-                    new accountDao().update(acc);
-                    view2.viewUpdate.dispose();
+                    boolean check = new accountBUS().updateAccount(acc);
+                    if (check == true) {
+                        JOptionPane.showMessageDialog(view2, "Sửa thành công", "Thông báo",
+                                JOptionPane.PLAIN_MESSAGE);
+                        view2.viewUpdate.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(view2, "Vui lòng kiểm tra lại thông tin cần sửa!!!", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 }
 
             }
@@ -137,15 +151,15 @@ public class taiKhoanController implements MouseListener, ActionListener, KeyLis
     public void keyReleased(KeyEvent e) {
         String src = view1.chucnang.textField.getText();
         String select = (String) view1.chucnang.comboBox.getSelectedItem();
-        if (select.equals("Theo tên")) {
-            view1.showInfo(view1.getListAccount().findByName(src.toLowerCase()));
+        if (select.equals("Theo username")) {
+            view1.showInfo(view1.getListAccount().getInfoByName(src.toLowerCase()));
         } else if (select.equals("Theo id")) {
             if (src.equals("")) {
                 // view1.reloadData();
                 view1.showInfo(view1.getListAccount().getListAccount());
             } else {
                 ArrayList<accountDTO> tmp = new ArrayList<accountDTO>();
-                tmp.add(view1.getListAccount().findByID(Integer.parseInt(src)));
+                tmp.add(view1.getListAccount().getInfo(Integer.parseInt(src)));
                 view1.showInfo(tmp);
             }
         }

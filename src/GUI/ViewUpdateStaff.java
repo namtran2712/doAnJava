@@ -16,7 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import DTO.staff;
+import DTO.staffDTO;
 import controller.nhanVienController;
 
 public class ViewUpdateStaff extends JFrame {
@@ -28,7 +28,7 @@ public class ViewUpdateStaff extends JFrame {
     public int id;
     public JDialog content;
 
-    public JDialog view(staff s) {
+    public JDialog view(staffDTO s) {
         id = s.getId();
         content = new JDialog(this, "Sửa thông tin", false);
         content.setSize(500, 450);
@@ -83,7 +83,8 @@ public class ViewUpdateStaff extends JFrame {
         panelContent.add(labelSalary);
 
         textFieldSalary = new JTextField(15);
-        textFieldSalary.setText(s.getSalary() + "");
+        String salary = String.format("%.0f", s.getSalary());
+        textFieldSalary.setText(salary);
         textFieldSalary.setFont(new Font("Arial", Font.PLAIN, 20));
         textFieldSalary.setMargin(new Insets(5, 5, 5, 5));
         panelContent.add(textFieldSalary);
@@ -104,6 +105,7 @@ public class ViewUpdateStaff extends JFrame {
 
         content.setModalityType(ModalityType.MODELESS);
         content.setModal(true);
+        content.setVisible(true);
 
         return content;
     }

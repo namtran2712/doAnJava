@@ -8,9 +8,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import DAO.customerDao;
-import DTO.customer;
-import DTO.customerManagement;
+import BUS.customerBUS;
+import DTO.customerDTO;
 import controller.khachHangController;
 
 import java.awt.BorderLayout;
@@ -26,11 +25,11 @@ public class Viewkhachhang extends JFrame {
 	private JPanel viewPanel;
 	private DefaultTableModel model;
 	private JTable tableDataKh;
-	private customerManagement listCustomer;
+	private customerBUS listCustomer;
 	public menuChucNang chucnang;
 
 	public Viewkhachhang() {
-		listCustomer = new customerManagement(new customerDao().selectAll());
+		listCustomer = new customerBUS();
 	}
 
 	public JPanel View() {
@@ -106,10 +105,10 @@ public class Viewkhachhang extends JFrame {
 		return tableDataKh;
 	}
 
-	public void showInfo(ArrayList<customer> list) {
+	public void showInfo(ArrayList<customerDTO> list) {
 		model.setRowCount(0);
 		int i = 0;
-		for (customer c : list) {
+		for (customerDTO c : list) {
 			model.addRow(new Object[] {
 					++i, c.getId(),
 					c.getName(),
@@ -119,19 +118,15 @@ public class Viewkhachhang extends JFrame {
 		}
 	}
 
-	public customerManagement getListCustomer() {
+	public customerBUS getListCustomer() {
 		return listCustomer;
 	}
 
-	public void deleteModel(int i) {
-		System.out.println("dòng cần xóa: " + i);
-		customer st = listCustomer.getListCustomer().get(i);
-		listCustomer.delete(i);
-		new customerDao().delete(st);
-		model.removeRow(i);
+	public void setListCustomer(customerBUS listCustomer) {
+		this.listCustomer = listCustomer;
 	}
 
 	public void reloadData() {
-		listCustomer.setListCustomer(new customerDao().selectAll());
+		listCustomer = new customerBUS();
 	}
 }

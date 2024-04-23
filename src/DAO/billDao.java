@@ -8,9 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.bill;
-import DTO.customer;
+import DTO.customerDTO;
 import DTO.particularBill;
-import DTO.staff;
+import DTO.staffDTO;
 import database.databaseUtil;
 
 public class billDao implements daoInterface<bill> {
@@ -36,8 +36,8 @@ public class billDao implements daoInterface<bill> {
                 state.setInt(1, t.getIdBill());
                 state.setInt(2, detail.getIdProduct().get(i));
                 state.setInt(3, detail.getQuantity().get(i));
-                rows +=state.executeUpdate();
-                
+                rows += state.executeUpdate();
+
             }
 
             return rows > 0;
@@ -46,7 +46,6 @@ public class billDao implements daoInterface<bill> {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
 
         databaseUtil.closeConnection(conn);
         return false;
@@ -67,15 +66,12 @@ public class billDao implements daoInterface<bill> {
             sql = "DELETE FROM PARTICULAR_BILLS WHERE ID_BILL = ?";
             state = conn.prepareStatement(sql);
             state.setInt(1, t.getIdBill());
-            rows =state.executeUpdate();
-            return rows>1;   
-        } 
-        catch (SQLException e) {
+            rows = state.executeUpdate();
+            return rows > 1;
+        } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-       
 
         databaseUtil.closeConnection(conn);
         return false;
@@ -108,14 +104,14 @@ public class billDao implements daoInterface<bill> {
                             rs.getInt("PARTICULAR_BILLS.ID_PRODUCT"),
                             rs.getInt("PARTICULAR_BILLS.QUANTITY"));
 
-                    staff st = new staff(rs.getInt("BILLS.ID_STAFF"),
+                    staffDTO st = new staffDTO(rs.getInt("BILLS.ID_STAFF"),
                             rs.getString("STAFF.FULLNAME"),
                             rs.getString("STAFF.PHONE_NUMBER"),
                             rs.getDate("STAFF.BIRTHDAY"),
                             rs.getFloat("STAFF.SALARY"),
                             rs.getString("STAFF.DATE_START"));
 
-                    customer ct = new customer(rs.getInt("CUSTOMER.ID_CUSTOMER"),
+                    customerDTO ct = new customerDTO(rs.getInt("CUSTOMER.ID_CUSTOMER"),
                             rs.getString("CUSTOMER.FULLNAME"),
                             rs.getString("CUSTOMER.PHONE_NUMBER"),
                             rs.getDate("CUSTOMER.BIRTHDAY"));

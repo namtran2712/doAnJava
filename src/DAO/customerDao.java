@@ -1,22 +1,23 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.customer;
+import DTO.customerDTO;
 import database.databaseUtil;
 
-public class customerDao implements daoInterface<customer> {
+public class customerDao implements daoInterface<customerDTO> {
     public static void main(String[] args) {
         customerDao a = new customerDao();
         a.insert(null);
     }
 
     @Override
-    public boolean delete(customer t) {
-        
+    public boolean delete(customerDTO t) {
         try {
             Connection connect = databaseUtil.getConnection();
             Statement statement = connect.createStatement();
@@ -24,39 +25,39 @@ public class customerDao implements daoInterface<customer> {
             String sql = "DELETE FROM CUSTOMER WHERE ID_CUSTOMER = "
                     + t.getId();
 
-            statement.executeUpdate(sql);
+            int rows = statement.executeUpdate(sql);
             databaseUtil.closeConnection(connect);
+            return rows > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return true;
+        return false;
     }
 
     @Override
-    public boolean insert(customer t) {
-        int sodongthaydoi=0;
-        try {   
+    public boolean insert(customerDTO t) {
+        try {
             Connection connection = databaseUtil.getConnection();
             Statement statement = connection.createStatement();
 
             String sql = "INSERT INTO CUSTOMER (FULLNAME, PHONE_NUMBER, BIRTHDAY) VALUES('"
                     + t.getName() + "','"
-                    + t.getPhoneNumber() + "'','"
+                    + t.getPhoneNumber() + "','"
                     + t.getBirthday()
                     + "')";
 
-            sodongthaydoi=statement.executeUpdate(sql);
+            int rows = statement.executeUpdate(sql);
             databaseUtil.closeConnection(connection);
+            return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return sodongthaydoi>0;
+        return false;
     }
 
     @Override
-    public ArrayList<customer> selectAll() {
+    public ArrayList<customerDTO> selectAll() {
         try {
             Connection connection = databaseUtil.getConnection();
             Statement statement = connection.createStatement();
@@ -66,10 +67,10 @@ public class customerDao implements daoInterface<customer> {
             Boolean result = statement.execute(sql);
 
             if (result) {
-                ArrayList<customer> customerList = new ArrayList<customer>();
+                ArrayList<customerDTO> customerList = new ArrayList<customerDTO>();
                 ResultSet rs = statement.getResultSet();
                 while (rs.next()) {
-                    customer tmp = new customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
+                    customerDTO tmp = new customerDTO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
                     customerList.add(tmp);
                 }
                 return customerList;
@@ -85,7 +86,7 @@ public class customerDao implements daoInterface<customer> {
     }
 
     @Override
-    public ArrayList<customer> selectByCondition(String condition) {
+    public ArrayList<customerDTO> selectByCondition(String condition) {
 
         try {
             Connection connection = databaseUtil.getConnection();
@@ -97,10 +98,10 @@ public class customerDao implements daoInterface<customer> {
             databaseUtil.closeConnection(connection);
 
             if (result) {
-                ArrayList<customer> customerList = new ArrayList<customer>();
+                ArrayList<customerDTO> customerList = new ArrayList<customerDTO>();
                 ResultSet rs = statement.getResultSet();
                 while (rs.next()) {
-                    customer tmp = new customer(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
+                    customerDTO tmp = new customerDTO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4));
                     customerList.add(tmp);
                 }
                 return customerList;
@@ -113,8 +114,8 @@ public class customerDao implements daoInterface<customer> {
     }
 
     @Override
-    public boolean update(customer t) {
-        
+    public boolean update(customerDTO t) {
+
         try {
             Connection connection = databaseUtil.getConnection();
             Statement statement = connection.createStatement();
@@ -127,11 +128,41 @@ public class customerDao implements daoInterface<customer> {
                     + " ' WHERE ID_CUSTOMER = "
                     + t.getId();
 
-            statement.executeUpdate(sql);
+            int rows = statement.executeUpdate(sql);
             databaseUtil.closeConnection(connection);
+            return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
+    }
+
+    public customerDTO getCustomerByPhone(String sdt) {
+        Connection conc = databaseUtil.getConnection();
+        String sql = "Select * from CUSTOMER where PHONE_NUMBER= ? ";
+        PreparedStatement prestmt;
+        try {
+            customerDTO customer;
+            prestmt = conc.prepareStatement(sql);
+            prestmt.setString(1, sdt);
+            ResultSet result = prestmt.executeQuery();
+            while (result.next()) {
+                customer = new customerDTO(result.getInt("ID_CUSTOMER"), result.getString("FULLNAME"), sdt,
+                        result.getDate("BIRTHDAY"));
+                return customer;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conc != null) {
+                try {
+                    conc.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return null;
     }
 }

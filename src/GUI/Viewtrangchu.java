@@ -7,8 +7,14 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,15 +22,19 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import BUS.productBUS;
+import BUS.validateBUS;
 import DTO.categoryDTO;
+import DTO.customerDTO;
 import DTO.productDTO;
 import DTO.materialDTO;
 import controller.menuItem_mouseController;
 import DAO.categoryDAO;
+import DAO.customerDao;
 import DAO.materialDAO;
 import DAO.productDao;
 
@@ -46,6 +56,7 @@ import java.awt.CardLayout;
 import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 
 @SuppressWarnings("unused")
@@ -60,6 +71,10 @@ public class Viewtrangchu extends JFrame {
 	private JTextField textField_1;
 	private JPanel container;
 	CardLayout card;
+	private JButton btn_thanhtoan;
+	private JButton conform;
+	private validateBUS valid;
+	
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -249,9 +264,28 @@ public class Viewtrangchu extends JFrame {
 		searchbarKh.setColumns(20);
 		panel.add(searchbarKh);
 
-		JButton conform = new JButton("Xác nhận");
+		searchbarKh.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				conform.setEnabled(true);
+			}
+			
+		});
+
+		conform = new JButton("Xác nhận");
 		conform.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		panel.add(conform);
+
+		conform.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				eventConform();
+				
+			}
+			
+		});
 
 		JPanel panel_12 = new JPanel();
 		thongtinkhachhang.add(panel_12);
@@ -291,8 +325,16 @@ public class Viewtrangchu extends JFrame {
 		formthongtin.add(thanhtoan, BorderLayout.SOUTH);
 		thanhtoan.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JButton btn_thanhtoan = new JButton("Thanh toán");
+		btn_thanhtoan = new JButton("Thanh toán");
 		btn_thanhtoan.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		btn_thanhtoan.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println( searchbarKh.getText());
+			}
+			
+		});
 		thanhtoan.add(btn_thanhtoan);
 
 		JPanel khachhangView = new JPanel();
@@ -336,6 +378,43 @@ public class Viewtrangchu extends JFrame {
 
 	public void changePage(String page) {
 		card.show(container, page.toLowerCase());
+	}
+
+	public void eventConform ()
+	{
+		String phoneNum =searchbarKh.getText();
+		valid =new validateBUS();
+		if (!valid.checkEmpty(searchbarKh) && valid.checkPhone(phoneNum))
+		{
+			customerDTO cus = new customerDao().getCustomerByPhone(phoneNum);
+			if (cus==null)
+			{
+				int check =JOptionPane.showConfirmDialog(this, "Khách hàng không tồn tại có muốn tạo mới khách hàng?");
+				if (check==JOptionPane.YES_OPTION)
+				{
+					addCusGUI gui = new addCusGUI();
+					JDialog viewAdd = gui.view(phoneNum);
+
+					viewAdd.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosed(WindowEvent e) {
+							if (gui.status == true) {
+								conform.setEnabled(false);
+							}
+						}
+					});
+				}
+			}	
+			else {
+				conform.setEnabled(false);
+			}
+		}
+		else 
+		{
+			JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng số điện thoại","Error",JOptionPane.ERROR_MESSAGE);
+		}
+
+
 	}
 
 }

@@ -12,7 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import DAO.formLoginValidate;
+import BUS.accountBUS;
+import DTO.accountDTO;
 import GUI.Viewtrangchu;
 import GUI.formLoginView;
 import GUI.formRegisterView;
@@ -37,14 +38,13 @@ public class formButtonLoginController implements ActionListener, MouseListener,
 			for (char c : pwd) {
 				password += c;
 			}
-			boolean check = formLoginValidate.checkUser(username, password);
+			accountDTO acc = new accountDTO(0, null, null, username, password);
+			boolean check = new accountBUS().checkLogin(acc);
 			if (check == true) {
 				view.dispose();
-
 				try {
 					new Viewtrangchu(username);
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} else {
@@ -115,14 +115,14 @@ public class formButtonLoginController implements ActionListener, MouseListener,
 				for (char c : pwd) {
 					password += c;
 				}
-				boolean check = formLoginValidate.checkUser(username, password);
+				accountDTO acc = new accountDTO(0, null, null, username, password);
+				boolean check = new accountBUS().checkLogin(acc);
 				if (check == true) {
 					view.dispose();
 
 					try {
 						new Viewtrangchu(username);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				} else {
@@ -147,14 +147,14 @@ public class formButtonLoginController implements ActionListener, MouseListener,
 				for (char c : pwd) {
 					password += c;
 				}
-				boolean check = formLoginValidate.checkUser(username, password);
+				accountDTO acc = new accountDTO(0, null, null, username, password);
+				boolean check = new accountBUS().checkLogin(acc);
 				if (check == true) {
 					view.dispose();
 
 					try {
 						new Viewtrangchu(username);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				} else {

@@ -5,12 +5,12 @@ import java.sql.Date;
 @SuppressWarnings("unused")
 public class accountDTO {
     private int idAccount;
-    private authorize vaiTro;
-    private staff nhanVien;
+    private authorizeDTO vaiTro;
+    private staffDTO nhanVien;
     private String username;
     private String password;
 
-    public accountDTO(int idAccount, authorize vaiTro, staff nhanVien, String username, String password) {
+    public accountDTO(int idAccount, authorizeDTO vaiTro, staffDTO nhanVien, String username, String password) {
         this.idAccount = idAccount;
         this.vaiTro = vaiTro;
         this.nhanVien = nhanVien;
@@ -26,19 +26,19 @@ public class accountDTO {
         this.idAccount = idAccount;
     }
 
-    public authorize getVaiTro() {
+    public authorizeDTO getVaiTro() {
         return vaiTro;
     }
 
-    public void setVaiTro(authorize vaiTro) {
+    public void setVaiTro(authorizeDTO vaiTro) {
         this.vaiTro = vaiTro;
     }
 
-    public staff getNhanVien() {
+    public staffDTO getNhanVien() {
         return nhanVien;
     }
 
-    public void setNhanVien(staff nhanVien) {
+    public void setNhanVien(staffDTO nhanVien) {
         this.nhanVien = nhanVien;
     }
 

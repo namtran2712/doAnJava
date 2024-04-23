@@ -1,4 +1,5 @@
 package DAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import DTO.accountDTO;
-import DTO.authorize;
-import DTO.staff;
+import DTO.authorizeDTO;
+import DTO.staffDTO;
 import database.databaseUtil;
 
 public class accountDao implements daoInterface<accountDTO> {
@@ -26,13 +27,14 @@ public class accountDao implements daoInterface<accountDTO> {
             pst.setString(4, t.getPassword());
 
             int rows = pst.executeUpdate();
+            return rows > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         databaseUtil.closeConnection(conn);
-        return true;
+        return false;
     }
 
     @Override
@@ -44,12 +46,13 @@ public class accountDao implements daoInterface<accountDTO> {
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, t.getIdAccount());
             int rows = pst.executeUpdate();
+            return rows > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         databaseUtil.closeConnection(conn);
-        return true;
+        return false;
     }
 
     @Override
@@ -59,24 +62,25 @@ public class accountDao implements daoInterface<accountDTO> {
         try {
             String sql = "UPDATE ACCOUNTS SET " +
             // "ID_ACCOUNT = ?," +
-                    "ID_AUTHORIZE = ?," +
-                    "ID_STAFF = ?," +
-                    // "USERNAME = ?," +
+            // "ID_AUTHORIZE = ?," +
+            // "ID_STAFF = ?," +
+            // "USERNAME = ?," +
                     "PASS_WORD = ? " +
                     "WHERE ID_ACCOUNT = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1, t.getVaiTro().getIdAuthorize());
-            pst.setInt(2, t.getNhanVien().getId());
-            pst.setString(3, t.getPassword());
-            pst.setInt(4, t.getIdAccount());
+            // pst.setInt(1, t.getVaiTro().getIdAuthorize());
+            // pst.setInt(2, t.getNhanVien().getId());
+            pst.setString(1, t.getPassword());
+            pst.setInt(2, t.getIdAccount());
             // pst.setString(4, t.getUsername());
             int rows = pst.executeUpdate();
+            return rows > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         databaseUtil.closeConnection(conn);
-        return true;
+        return false;
     }
 
     @Override
@@ -94,7 +98,7 @@ public class accountDao implements daoInterface<accountDTO> {
             PreparedStatement pst = conn.prepareStatement(sql);
             ResultSet result = pst.executeQuery();
             while (result.next()) {
-                staff s = new staff(
+                staffDTO s = new staffDTO(
                         result.getInt("ID_STAFF"),
                         result.getString("FULLNAME"),
                         result.getString("PHONE_NUMBER"),
@@ -102,7 +106,7 @@ public class accountDao implements daoInterface<accountDTO> {
                         result.getFloat("SALARY"),
                         result.getString("DATE_START"));
 
-                authorize auth = new authorize(
+                authorizeDTO auth = new authorizeDTO(
                         result.getInt("ID_AUTHORIZE"),
                         result.getString("AUTHORIZE_NAME"));
                 accountDTO acc = new accountDTO(
@@ -142,7 +146,7 @@ public class accountDao implements daoInterface<accountDTO> {
             pst.setInt(1, id);
             ResultSet result = pst.executeQuery();
             while (result.next()) {
-                staff s = new staff(
+                staffDTO s = new staffDTO(
                         result.getInt("ID_STAFF"),
                         result.getString("FULLNAME"),
                         result.getString("PHONE_NUMBER"),
@@ -150,7 +154,7 @@ public class accountDao implements daoInterface<accountDTO> {
                         result.getFloat("SALARY"),
                         result.getString("DATE_START"));
 
-                authorize auth = new authorize(
+                authorizeDTO auth = new authorizeDTO(
                         result.getInt("ID_AUTHORIZE"),
                         result.getString("AUTHORIZE_NAME"));
                 accountDTO acc = new accountDTO(

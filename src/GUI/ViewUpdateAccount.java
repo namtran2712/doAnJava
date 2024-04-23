@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 
 import DAO.authorizeDao;
 import DTO.accountDTO;
-import DTO.authorize;
+import DTO.authorizeDTO;
 import controller.taiKhoanController;
 
 public class ViewUpdateAccount extends JFrame {
@@ -54,18 +54,13 @@ public class ViewUpdateAccount extends JFrame {
         labelAuthorize.setFont(new Font("Arial", Font.ITALIC, 20));
         labelAuthorize.setPreferredSize(new Dimension(200, 50));
 
-        ArrayList<authorize> list = new authorizeDao().selectAll();
-
-        String[] authorizes = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            authorizes[i] = list.get(i).getName();
-        }
-
-        comboBoxAuthorize = new JComboBox<String>(authorizes);
-        panelContent.add(comboBoxAuthorize);
-        comboBoxAuthorize.setPreferredSize(new Dimension(200, 40));
-        comboBoxAuthorize.setFont(new Font("Arial", Font.PLAIN, 20));
-        comboBoxAuthorize.setSelectedItem(acc.getVaiTro().getName());
+        JTextField textFieldAuthorize = new JTextField(11);
+        textFieldAuthorize.setText(acc.getVaiTro().getName());
+        textFieldAuthorize.setPreferredSize(new Dimension(200, 40));
+        panelContent.add(textFieldAuthorize);
+        textFieldAuthorize.setFont(new Font("Arial", Font.PLAIN, 20));
+        textFieldAuthorize.setMargin(new Insets(5, 5, 5, 5));
+        textFieldAuthorize.setEditable(false);
 
         JLabel labelUsername = new JLabel("Username");
         panelContent.add(labelUsername);
@@ -77,6 +72,7 @@ public class ViewUpdateAccount extends JFrame {
         panelContent.add(textFieldUsername);
         textFieldUsername.setFont(new Font("Arial", Font.PLAIN, 20));
         textFieldUsername.setMargin(new Insets(5, 5, 5, 5));
+        textFieldUsername.setEditable(false);
 
         JLabel labelPassword = new JLabel("Password");
         panelContent.add(labelPassword);
@@ -106,6 +102,7 @@ public class ViewUpdateAccount extends JFrame {
 
         viewUpdate.setModalityType(ModalityType.MODELESS);
         viewUpdate.setModal(true);
+        viewUpdate.setVisible(true);
 
         return viewUpdate;
     }
