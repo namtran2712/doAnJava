@@ -209,9 +209,8 @@ public class Viewtrangchu extends JFrame {
 			itempanel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {
-					super.mousePressed(e);
-					showProduct sw = new showProduct();
-					sw.showSanPham(product,id);
+					super.mousePressed(e);	
+					
 
 				}
 
