@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Dialog.ModalityType;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,9 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import DAO.authorizeDao;
 import DTO.accountDTO;
-import DTO.authorizeDTO;
 import controller.taiKhoanController;
 
 public class ViewUpdateAccount extends JFrame {
