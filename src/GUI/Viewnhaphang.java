@@ -14,11 +14,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+import DAO.accountDao;
+import DTO.accountDTO;
 import DTO.databaseProduct;
 import DTO.productDTO;
 import controller.nhapHangController;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -98,7 +102,8 @@ public class Viewnhaphang extends JFrame {
                 return tbListProducts;
         }
 
-        public JPanel nhaphang() {
+        public JPanel nhaphang(String username) {
+                accountDTO acc = new accountDao().selectByUsername(username);
 
                 nhapHang = new JPanel();
                 setContentPane(nhapHang);
@@ -298,6 +303,8 @@ public class Viewnhaphang extends JFrame {
 
                 tfIdPn = new JTextField(15);
                 tfNameStaff = new JTextField(15);
+                tfNameStaff.setText(acc.getNhanVien().getName());
+                tfNameStaff.setEditable(false);
 
                 tfIdPn.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
                 tfNameStaff.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
@@ -325,6 +332,12 @@ public class Viewnhaphang extends JFrame {
                 // btnNhapHang.setOpaque(true);
                 btnNhapHang.setForeground(Color.WHITE);
                 btnNhapHang.setFont(new Font("hello", ABORT, 20));
+                btnNhapHang.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
+                });
 
                 jpBtnandPrice.add(lbTotalPrice);
                 jpBtnandPrice.add(lbTotal);
@@ -333,8 +346,8 @@ public class Viewnhaphang extends JFrame {
                 jpPriceandBtn.add(new JLabel(""));
                 jpPriceandBtn.add(jpBtnandPrice);
 
-                jpIdandStaff.add(lbIdPn);
-                jpIdandStaff.add(tfIdPn);
+                // jpIdandStaff.add(lbIdPn);
+                // jpIdandStaff.add(tfIdPn);
                 jpIdandStaff.add(lbNameStaff);
                 jpIdandStaff.add(tfNameStaff);
 
@@ -404,9 +417,9 @@ public class Viewnhaphang extends JFrame {
         public void loadData() {
                 for (int i = 0; i < listProduct.size(); i++) {
                         modelListProducts.insertRow(i, new Object[] { i + 1, listProduct.get(i).getIdProduct(),
-                                        listProduct.get(i).getName() });
+                                        listProduct.get(i).getName()
+                        });
                 }
-
         }
 
 }

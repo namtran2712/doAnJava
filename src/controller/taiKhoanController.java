@@ -10,18 +10,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import BUS.accountBUS;
-import BUS.staffBUS;
-import DAO.accountDao;
-import DAO.authorizeDao;
 import DTO.accountDTO;
-import DTO.authorizeDTO;
 import GUI.ViewUpdateAccount;
 import GUI.Viewtaikhoan;
 
@@ -113,6 +108,9 @@ public class taiKhoanController implements MouseListener, ActionListener, KeyLis
                 accountDTO acc = new accountBUS().getInfo(view2.id);
                 acc.setUsername(view2.textFieldUsername.getText());
                 acc.setPassword(view2.textFieldPassword.getText());
+                String status = (String) view2.comboBoxStatus.getSelectedItem();
+                int stt = status == "Được hoạt động" ? 1 : 0;
+                acc.setStatus(stt);
 
                 int result = JOptionPane.showConfirmDialog(view2, "Bạn chắn chắn muốn sửa?", "Sửa thông tin",
                         JOptionPane.YES_NO_CANCEL_OPTION);

@@ -9,13 +9,16 @@ public class accountDTO {
     private staffDTO nhanVien;
     private String username;
     private String password;
+    private int status;
 
-    public accountDTO(int idAccount, authorizeDTO vaiTro, staffDTO nhanVien, String username, String password) {
+    public accountDTO(int idAccount, authorizeDTO vaiTro, staffDTO nhanVien, String username, String password,
+            int status) {
         this.idAccount = idAccount;
         this.vaiTro = vaiTro;
         this.nhanVien = nhanVien;
         this.username = username;
         this.password = password;
+        this.status = status;
     }
 
     public int getIdAccount() {
@@ -56,5 +59,13 @@ public class accountDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

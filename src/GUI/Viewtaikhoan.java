@@ -70,6 +70,7 @@ public class Viewtaikhoan extends JFrame {
         model.addColumn("Tên người dùng");
         model.addColumn("Username");
         model.addColumn("Password");
+        model.addColumn("Trạng thái");
         panel.setLayout(new GridLayout(1, 1, 20, 20));
         model.setRowCount(25);
         JScrollPane pane = new JScrollPane(tableAccount);
@@ -81,12 +82,13 @@ public class Viewtaikhoan extends JFrame {
         header.setForeground(new Color(255, 0, 127));
 
         TableColumnModel tableColumnModel = tableAccount.getColumnModel();
-        tableColumnModel.getColumn(0).setPreferredWidth(70);
-        tableColumnModel.getColumn(1).setPreferredWidth(70);
-        tableColumnModel.getColumn(2).setPreferredWidth(300);
-        tableColumnModel.getColumn(3).setPreferredWidth(300);
-        tableColumnModel.getColumn(4).setPreferredWidth(300);
-        tableColumnModel.getColumn(5).setPreferredWidth(200);
+        tableColumnModel.getColumn(0).setPreferredWidth(50);
+        tableColumnModel.getColumn(1).setPreferredWidth(50);
+        tableColumnModel.getColumn(2).setPreferredWidth(100);
+        tableColumnModel.getColumn(3).setPreferredWidth(180);
+        tableColumnModel.getColumn(4).setPreferredWidth(200);
+        tableColumnModel.getColumn(5).setPreferredWidth(100);
+        tableColumnModel.getColumn(5).setPreferredWidth(50);
 
         panel.add(pane);
 
@@ -125,13 +127,15 @@ public class Viewtaikhoan extends JFrame {
         model.setRowCount(0);
         int i = 0;
         for (accountDTO acc : list) {
+            String status = acc.getStatus() == 1 ? "Được hoạt động" : "Khóa hoạt động";
             model.addRow(new Object[] {
                     ++i,
                     acc.getIdAccount(),
                     acc.getVaiTro().getName(),
                     acc.getNhanVien().getName(),
                     acc.getUsername(),
-                    acc.getPassword()
+                    acc.getPassword(),
+                    status
             });
         }
     }

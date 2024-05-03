@@ -64,16 +64,20 @@ public class accountBUS {
         return false;
     }
 
-    public boolean checkLogin(accountDTO acc) {
+    public int checkLogin(accountDTO acc) {
         for (accountDTO account : listAccount) {
             if (account.getUsername().equals(acc.getUsername())) {
                 if (account.getPassword().equals(acc.getPassword())) {
-                    return true;
+                    if (account.getStatus() == 1) {
+                        return 1;
+                    } else if (account.getStatus() == 0) {
+                        return 0;
+                    }
                 }
-                return false;
+                return 2;
             }
         }
-        return false;
+        return 2;
     }
 
     public boolean checkRegister(accountDTO acc) {

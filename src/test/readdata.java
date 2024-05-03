@@ -47,8 +47,7 @@ public class readdata {
                 price = Float.parseFloat(line2);
 
                 Map<Integer, Float> priceOfsize = new HashMap<Integer, Float>();
-               
-                
+
                 Connection conc = databaseUtil.getConnection();
                 try {
                     Statement stmt = conc.createStatement();

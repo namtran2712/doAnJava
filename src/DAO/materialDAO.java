@@ -2,6 +2,7 @@ package DAO;
 
 import java.sql.Statement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class materialDAO implements daoInterface<materialDTO> {
             String sql = "select * from material";
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                materialDTO material = new materialDTO(rs.getInt(1), rs.getString(2 ));
+                materialDTO material = new materialDTO(rs.getInt(1), rs.getString(2));
                 result.add(material);
             }
             databaseUtil.closeConnection(conc);
@@ -39,6 +40,29 @@ public class materialDAO implements daoInterface<materialDTO> {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public materialDTO selectByID(int id) {
+        Connection conn = databaseUtil.getConnection();
+        try {
+            String sql = "select * " +
+                    "from material " +
+                    "where id_material = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                materialDTO material = new materialDTO(
+                        rs.getInt("ID_MATERIAL"),
+                        rs.getString("MATERIAL_NAME"));
+                databaseUtil.closeConnection(conn);
+                return material;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

@@ -60,7 +60,7 @@ public class Viewtrangchu extends JFrame {
 	private JTextField textField_1;
 	private JPanel container;
 	CardLayout card;
-	
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -83,7 +83,7 @@ public class Viewtrangchu extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		menuTrangchu = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics grphcs) {
@@ -200,7 +200,7 @@ public class Viewtrangchu extends JFrame {
 		int index = 0;
 		while (index < listProduct.getQuantityProducts()) {
 			productDTO product = listProduct.getProduct(index);
-			String name = product.getName()	;
+			String name = product.getName();
 			String img = product.getLinkImg();
 			String price = listProduct.getDefaultPrice(product);
 			String category = listProduct.getCategoryProduct(product.getIdCategory());
@@ -211,7 +211,7 @@ public class Viewtrangchu extends JFrame {
 				public void mousePressed(MouseEvent e) {
 					super.mousePressed(e);
 					showProduct sw = new showProduct();
-					sw.showSanPham(product,id);
+					sw.showSanPham(product, id);
 
 				}
 
@@ -285,8 +285,6 @@ public class Viewtrangchu extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		thongtinsanpham.add(scrollPane);
 
-	
-
 		JPanel thanhtoan = new JPanel();
 		thanhtoan.setPreferredSize(new Dimension(10, 50));
 		formthongtin.add(thanhtoan, BorderLayout.SOUTH);
@@ -310,7 +308,7 @@ public class Viewtrangchu extends JFrame {
 		container.add(nhanvienView, "nhân viên");
 
 		JPanel nhaphangView = new JPanel();
-		nhaphangView = new Viewnhaphang().nhaphang();
+		nhaphangView = new Viewnhaphang().nhaphang(username);
 		container.add(nhaphangView, "nhập hàng");
 
 		JPanel phieuxuatView = new JPanel();

@@ -74,4 +74,14 @@ public class validateBUS {
         LocalDateTime now = LocalDateTime.now();
         return now.getYear() - age >= 17;
     }
+
+    public boolean checkNumber(String number) {
+        char[] arr = number.toCharArray();
+        for (int i = 1; i < arr.length; i++) {
+            if (!Character.isDigit(arr[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

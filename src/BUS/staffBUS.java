@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import DAO.staffDao;
+import DTO.customerDTO;
 import DTO.staffDTO;
 
 public class staffBUS {
@@ -81,6 +82,12 @@ public class staffBUS {
 				if (s.getPhoneNumber().equals(staff.getPhoneNumber())) {
 					return true;
 				}
+			}
+		}
+		customerBUS cus = new customerBUS();
+		for (customerDTO c : cus.getListCustomer()) {
+			if (c.getPhoneNumber().equals(staff.getPhoneNumber())) {
+				return true;
 			}
 		}
 		return false;

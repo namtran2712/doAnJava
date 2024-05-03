@@ -21,12 +21,7 @@ import GUI.formRegisterView;
 public class formButtonLoginController implements ActionListener, MouseListener, KeyListener {
 	private formLoginView view;
 
-	public formButtonLoginController(formLoginView view) {
-		this.view = view;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void login() {
 		if (checkEmpty(this.view.getPassword())) {
 
 			JOptionPane.showMessageDialog(view, "Vui lòng điền đầy đủ thông tin", "Lỗi đăng nhập",
@@ -38,20 +33,32 @@ public class formButtonLoginController implements ActionListener, MouseListener,
 			for (char c : pwd) {
 				password += c;
 			}
-			accountDTO acc = new accountDTO(0, null, null, username, password);
-			boolean check = new accountBUS().checkLogin(acc);
-			if (check == true) {
+			accountDTO acc = new accountDTO(0, null, null, username, password, 1);
+			int check = new accountBUS().checkLogin(acc);
+			if (check == 1) {
 				view.dispose();
 				try {
 					new Viewtrangchu(username);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-			} else {
+			} else if (check == 2) {
 				JOptionPane.showMessageDialog(view, "Sai tên đăng nhập hoặc mật khẩu", "Lỗi đăng nhập",
 						JOptionPane.ERROR_MESSAGE);
+			} else if (check == 0) {
+				JOptionPane.showMessageDialog(view, "Tài khoản đã bị khóa", "Lỗi đăng nhập",
+						JOptionPane.WARNING_MESSAGE);
 			}
 		}
+	}
+
+	public formButtonLoginController(formLoginView view) {
+		this.view = view;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		login();
 	}
 
 	public boolean checkEmpty(JPasswordField password) {
@@ -104,64 +111,14 @@ public class formButtonLoginController implements ActionListener, MouseListener,
 	@Override
 	public void keyTyped(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if (checkEmpty(this.view.getPassword())) {
 
-				JOptionPane.showMessageDialog(view, "Vui lòng điền đầy đủ thông tin", "Lỗi đăng nhập",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				String username = this.view.getFieldUsername().getText();
-				char pwd[] = this.view.getPassword().getPassword();
-				String password = "";
-				for (char c : pwd) {
-					password += c;
-				}
-				accountDTO acc = new accountDTO(0, null, null, username, password);
-				boolean check = new accountBUS().checkLogin(acc);
-				if (check == true) {
-					view.dispose();
-
-					try {
-						new Viewtrangchu(username);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				} else {
-					JOptionPane.showMessageDialog(view, "Sai tên đăng nhập hoặc mật khẩu", "Lỗi đăng nhập",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
 		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if (checkEmpty(this.view.getPassword())) {
-
-				JOptionPane.showMessageDialog(view, "Vui lòng điền đầy đủ thông tin", "Lỗi đăng nhập",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				String username = this.view.getFieldUsername().getText();
-				char pwd[] = this.view.getPassword().getPassword();
-				String password = "";
-				for (char c : pwd) {
-					password += c;
-				}
-				accountDTO acc = new accountDTO(0, null, null, username, password);
-				boolean check = new accountBUS().checkLogin(acc);
-				if (check == true) {
-					view.dispose();
-
-					try {
-						new Viewtrangchu(username);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				} else {
-					JOptionPane.showMessageDialog(view, "Sai tên đăng nhập hoặc mật khẩu", "Lỗi đăng nhập",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
+			login();
 		}
 	}
 

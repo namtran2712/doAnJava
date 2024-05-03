@@ -5,11 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.swing.JOptionPane;
 
 import BUS.accountBUS;
@@ -63,7 +59,7 @@ public class formButtonRegisterController implements ActionListener, KeyListener
 			Date date = Date.valueOf(birthday);
 			staffDTO staff = new staffDTO(0, fullName, phoneNumber, date, 0, "");
 			accountDTO acc = new accountDTO(0,
-					auth, staff, username, pass);
+					auth, staff, username, pass, 1);
 			boolean check = new staffBUS().checkMatchPhone(acc.getNhanVien());
 			if (check) {
 				JOptionPane.showMessageDialog(view, "Số điện thoại đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);

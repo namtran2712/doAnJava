@@ -8,8 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Dialog.ModalityType;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -18,22 +16,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import DAO.authorizeDao;
 import DTO.accountDTO;
-import DTO.authorizeDTO;
 import controller.taiKhoanController;
 
 public class ViewUpdateAccount extends JFrame {
     public int id;
     public JDialog viewUpdate;
-    public JComboBox<String> comboBoxAuthorize;
     public JTextField textFieldUsername;
     public JTextField textFieldPassword;
+    public JComboBox<String> comboBoxStatus;
 
     public JDialog view(accountDTO acc) {
         id = acc.getIdAccount();
         viewUpdate = new JDialog();
-        viewUpdate.setSize(500, 400);
+        viewUpdate.setSize(500, 470);
         viewUpdate.setTitle("Sửa tài khoản");
         viewUpdate.setLocationRelativeTo(null);
         viewUpdate.setLayout(new BorderLayout(20, 20));
@@ -84,6 +80,16 @@ public class ViewUpdateAccount extends JFrame {
         panelContent.add(textFieldPassword);
         textFieldPassword.setFont(new Font("Arial", Font.PLAIN, 20));
         textFieldPassword.setMargin(new Insets(5, 5, 5, 5));
+
+        String status[] = new String[] {
+                "Được hoạt động",
+                "Khóa hoạt động"
+        };
+
+        comboBoxStatus = new JComboBox<String>(status);
+        panelContent.add(comboBoxStatus);
+        comboBoxStatus.setPreferredSize(new Dimension(410, 50));
+        comboBoxStatus.setFont(new Font("Arial", Font.PLAIN, 20));
 
         JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
