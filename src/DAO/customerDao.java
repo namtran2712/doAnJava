@@ -1,7 +1,9 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -41,7 +43,7 @@ public class customerDao implements daoInterface<customerDTO> {
 
             String sql = "INSERT INTO CUSTOMER (FULLNAME, PHONE_NUMBER, BIRTHDAY) VALUES('"
                     + t.getName() + "','"
-                    + t.getPhoneNumber() + "'','"
+                    + t.getPhoneNumber() + "','"
                     + t.getBirthday()
                     + "')";
 
@@ -133,5 +135,34 @@ public class customerDao implements daoInterface<customerDTO> {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public customerDTO getCustomerByPhone(String sdt) {
+        Connection conc = databaseUtil.getConnection();
+        String sql = "Select * from CUSTOMER where PHONE_NUMBER= ? ";
+        PreparedStatement prestmt;
+        try {
+            customerDTO customer;
+            prestmt = conc.prepareStatement(sql);
+            prestmt.setString(1, sdt);
+            ResultSet result = prestmt.executeQuery();
+            while (result.next()) {
+                customer = new customerDTO(result.getInt("ID_CUSTOMER"), result.getString("FULLNAME"), sdt,
+                        result.getDate("BIRTHDAY"));
+                return customer;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conc != null) {
+                try {
+                    conc.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return null;
     }
 }

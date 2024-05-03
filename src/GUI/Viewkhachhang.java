@@ -9,7 +9,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
 import BUS.customerBUS;
-import DAO.customerDao;
 import DTO.customerDTO;
 import controller.khachHangController;
 
