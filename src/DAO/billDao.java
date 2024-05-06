@@ -7,15 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DTO.bill;
+import DTO.billDTO;
 import DTO.customerDTO;
 import DTO.particularBill;
+import DTO.productDTO;
 import DTO.staffDTO;
 import database.databaseUtil;
 
-public class billDao implements daoInterface<bill> {
+public class billDao implements daoInterface<billDTO> {
     @Override
-    public boolean insert(bill t) {
+    public boolean insert(billDTO t) {
         Connection conn = databaseUtil.getConnection();
 
         try {
@@ -27,23 +28,23 @@ public class billDao implements daoInterface<bill> {
             state.setFloat(3, t.getTotal());
 
             int rows = state.executeUpdate();
+            int id = getLastId();
 
-            particularBill detail = t.getDetail();
-            for (int i = 0; i < detail.getIdProduct().size(); i++) {
-                sql = "INSERT INTO PARTICULAR_BILLS (ID_BILLS, ID_PRODUCT, QUANTITY) " +
-                        "VALUES (?, ?, ?)";
+            for (particularBill p : t.getDetail()) {
+                sql = "INSERT INTO PARTICULAR_BILLS (ID_BILL, ID_PRODUCT, SIZE, PRICE, QUANTITY) " +
+                        "VALUES (?, ?, ?, ?, ?)";
                 state = conn.prepareStatement(sql);
-                state.setInt(1, t.getIdBill());
-                state.setInt(2, detail.getIdProduct().get(i));
-                state.setInt(3, detail.getQuantity().get(i));
-                rows += state.executeUpdate();
-
+                state.setInt(1, id);
+                state.setInt(2, p.getProduct().getIdProduct());
+                state.setInt(3, p.getSize());
+                state.setFloat(4, p.getPrice());
+                state.setInt(5, p.getQuantity());
+                rows += state.executeLargeUpdate();
             }
-
+            databaseUtil.closeConnection(conn);
             return rows > 0;
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -52,21 +53,42 @@ public class billDao implements daoInterface<bill> {
 
     }
 
-    @Override
-    public boolean delete(bill t) {
+    public int getLastId() {
         Connection conn = databaseUtil.getConnection();
 
         try {
-            int rows;
-            String sql = "DELETE FROM BILLS WHERE ID_BILL = ?";
+            String sql = "SELECT ID_BILL " +
+                    "FROM BILLS " +
+                    "ORDER BY ID_BILL DESC " +
+                    "LIMIT 1";
+            PreparedStatement pst = conn.prepareStatement(sql);
+
+            ResultSet result = pst.executeQuery();
+            while (result.next()) {
+                int id = result.getInt("ID_BILL");
+                databaseUtil.closeConnection(conn);
+                return id;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        databaseUtil.closeConnection(conn);
+        return 0;
+    }
+
+    @Override
+    public boolean delete(billDTO t) {
+        Connection conn = databaseUtil.getConnection();
+
+        try {
+            String sql = "UPDATE BILLS SET " +
+                    "STATUS_BILL = 0 " +
+                    "WHERE ID_BILL = ?";
             PreparedStatement state = conn.prepareStatement(sql);
             state.setInt(1, t.getIdBill());
-            state.executeUpdate();
-
-            sql = "DELETE FROM PARTICULAR_BILLS WHERE ID_BILL = ?";
-            state = conn.prepareStatement(sql);
-            state.setInt(1, t.getIdBill());
-            rows = state.executeUpdate();
+            int rows = state.executeUpdate();
+            databaseUtil.closeConnection(conn);
             return rows > 1;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -78,31 +100,43 @@ public class billDao implements daoInterface<bill> {
     }
 
     @Override
-    public boolean update(bill t) {
+    public boolean update(billDTO t) {
         return true;
     }
 
     @Override
-    public ArrayList<bill> selectAll() {
+    public ArrayList<billDTO> selectAll() {
         Connection conn = databaseUtil.getConnection();
 
         try {
             String sql = "SELECT * " +
                     " FROM BILLS JOIN PARTICULAR_BILLS ON BILLS.ID_BILL = PARTICULAR_BILLS.ID_BILL" +
                     " JOIN STAFF ON BILLS.ID_STAFF = STAFF.ID_STAFF" +
-                    " JOIN CUSTOMER ON BILLS.ID_CUSTOMER = CUSTOMER.ID_CUSTOMER";
+                    " JOIN CUSTOMER ON BILLS.ID_CUSTOMER = CUSTOMER.ID_CUSTOMER" +
+                    " JOIN PRODUCTS ON PRODUCTS.ID_PRODUCT = PARTICULAR_BILLS.ID_PRODUCT" +
+                    " WHERE STATUS_BILL = 1";
             PreparedStatement state = conn.prepareStatement(sql);
 
             ResultSet rs = state.executeQuery();
 
-            ArrayList<bill> arrayList = new ArrayList<bill>();
+            ArrayList<billDTO> arrayList = new ArrayList<billDTO>();
             int currentID = -1;
             while (rs.next()) {
                 if (rs.getInt("BILLS.ID_BILL") != currentID) {
                     currentID = rs.getInt("BILLS.ID_BILL");
+                    productDTO product = new productDTO(
+                            rs.getInt("PRODUCTS.ID_PRODUCT"),
+                            rs.getInt("ID_CATEGORY"),
+                            rs.getInt("ID_MATERIAL"),
+                            rs.getString("PRODUCT_NAME"),
+                            rs.getInt("QUANTITY_SOLD"),
+                            rs.getString("LINK_IMAGE"), null);
+
                     particularBill tmp1 = new particularBill(
-                            rs.getInt("PARTICULAR_BILLS.ID_PRODUCT"),
-                            rs.getInt("PARTICULAR_BILLS.QUANTITY"));
+                            product,
+                            rs.getInt("SIZE"),
+                            rs.getInt("PARTICULAR_BILLS.QUANTITY"),
+                            rs.getFloat("PRICE"));
 
                     staffDTO st = new staffDTO(rs.getInt("BILLS.ID_STAFF"),
                             rs.getString("STAFF.FULLNAME"),
@@ -116,7 +150,7 @@ public class billDao implements daoInterface<bill> {
                             rs.getString("CUSTOMER.PHONE_NUMBER"),
                             rs.getDate("CUSTOMER.BIRTHDAY"));
 
-                    bill tmp2 = new bill(rs.getInt("BILLS.ID_BILL"),
+                    billDTO tmp2 = new billDTO(rs.getInt("BILLS.ID_BILL"),
                             st,
                             ct,
                             rs.getFloat("BILLS.TOTAL_BILL"),
@@ -128,14 +162,23 @@ public class billDao implements daoInterface<bill> {
                     arrayList.add(tmp2);
 
                 } else {
+                    productDTO product = new productDTO(
+                            rs.getInt("PRODUCTS.ID_PRODUCT"),
+                            rs.getInt("ID_CATEGORY"),
+                            rs.getInt("ID_MATERIAL"),
+                            rs.getString("PRODUCT_NAME"),
+                            rs.getInt("QUANTITY_SOLD"),
+                            rs.getString("LINK_IMAGE"), null);
 
-                    arrayList.get(arrayList.size() - 1).getDetail().getIdProduct()
-                            .add(rs.getInt("PARTICULAR_BILLS.ID_PRODUCT"));
-                    arrayList.get(arrayList.size() - 1).getDetail().getQuantity()
-                            .add(rs.getInt("PARTICULAR_BILLS.QUANTITY"));
-
+                    particularBill tmp1 = new particularBill(
+                            product,
+                            rs.getInt("SIZE"),
+                            rs.getInt("PARTICULAR_BILLS.QUANTITY"),
+                            rs.getFloat("PRICE"));
+                    arrayList.get(arrayList.size() - 1).getDetail().add(tmp1);
                 }
             }
+            databaseUtil.closeConnection(conn);
             return arrayList;
 
         } catch (SQLException e) {
@@ -148,7 +191,7 @@ public class billDao implements daoInterface<bill> {
     }
 
     @Override
-    public ArrayList<bill> selectByCondition(String condition) {
+    public ArrayList<billDTO> selectByCondition(String condition) {
 
         return null;
     }

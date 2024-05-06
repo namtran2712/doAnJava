@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.Dialog.ModalityType;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,23 +16,22 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import DTO.particularProduct;
-import DTO.productDTO;
+import DTO.billDTO;
+import DTO.particularBill;
 
-public class viewParticularProduct extends JFrame {
-
+public class viewParticularBill {
     private DefaultTableModel model;
 
-    public JDialog view(productDTO product) {
+    public JDialog view(billDTO bill) {
         JDialog viewParticular = new JDialog();
-        viewParticular.setTitle("Chi tiết phiếu nhập");
+        viewParticular.setTitle("Chi tiết phiếu xuất");
         viewParticular.setSize(700, 470);
         viewParticular.setLocationRelativeTo(null);
         viewParticular.setResizable(false);
 
         JPanel panelHeader = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-        JLabel labelTitle = new JLabel("Chi tiết sản phẩm", JLabel.CENTER);
+        JLabel labelTitle = new JLabel("Chi tiết phiếu xuất", JLabel.CENTER);
         labelTitle.setFont(new Font("Arial", Font.BOLD, 20));
         labelTitle.setForeground(Color.PINK);
         panelHeader.add(labelTitle);
@@ -78,7 +76,7 @@ public class viewParticularProduct extends JFrame {
         viewParticular.add(panelHeader, BorderLayout.NORTH);
         viewParticular.add(scrollPane, BorderLayout.CENTER);
 
-        loadData(product);
+        loadData(bill);
 
         viewParticular.setModalityType(ModalityType.MODELESS);
         viewParticular.setModal(true);
@@ -86,18 +84,17 @@ public class viewParticularProduct extends JFrame {
         return viewParticular;
     }
 
-    public void loadData(productDTO product) {
+    public void loadData(billDTO bill) {
         model.setRowCount(0);
         int i = 0;
-        for (particularProduct items : product.getParticularProducts()) {
+        for (particularBill items : bill.getDetail()) {
             model.addRow(new Object[] {
                     ++i,
-                    product.getName(),
+                    items.getProduct().getName(),
                     items.getSize(),
                     item.price(items.getPrice()),
-                    items.getQuantityRemain()
+                    items.getQuantity()
             });
         }
-
     }
 }

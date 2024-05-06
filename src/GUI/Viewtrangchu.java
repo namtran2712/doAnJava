@@ -76,6 +76,7 @@ public class Viewtrangchu extends JFrame {
 	private JButton conform;
 	private validateBUS valid;
 	private JPanel phieunhapView;
+	private JPanel khachhangView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -368,7 +369,7 @@ public class Viewtrangchu extends JFrame {
 		});
 		thanhtoan.add(btn_thanhtoan);
 
-		JPanel khachhangView = new JPanel();
+		khachhangView = new JPanel();
 		khachhangView = new Viewkhachhang().View();
 		container.add(khachhangView, "khách hàng");
 		// khachhangView.setLayout(null);
@@ -444,8 +445,11 @@ public class Viewtrangchu extends JFrame {
 
 	public void loadViewAll() {
 		container.remove(phieunhapView);
+		container.remove(khachhangView);
+		khachhangView = new Viewkhachhang().View();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
+		container.add(khachhangView, "khách hàng");
 	}
 
 }

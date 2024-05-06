@@ -1,41 +1,51 @@
 package DTO;
 
-import java.util.ArrayList;
-
 public class particularBill {
-    private ArrayList<Integer> idProduct;
-    private ArrayList<Integer> quantity;
+    private productDTO Product;
+    private int size;
+    private int quantity;
+    private float price;
 
     public particularBill() {
-        idProduct = new ArrayList<Integer>();
-        quantity = new ArrayList<Integer>();
     }
 
-    public particularBill(int id, int quantity) {
-        this.idProduct = new ArrayList<Integer>();
-        this.quantity = new ArrayList<Integer>();
-        this.idProduct.add(id);
-        this.quantity.add(quantity);
+    public particularBill(productDTO Product, int size, int quantity, float price) {
+        this.size = size;
+        this.quantity = quantity;
+        this.price = price;
+        this.Product = Product;
     }
 
-    public void addInfo(int id, int quantity) {
-        this.idProduct.add(id);
-        this.quantity.add(quantity);
+    public productDTO getProduct() {
+        return Product;
     }
 
-    public ArrayList<Integer> getIdProduct() {
-        return idProduct;
+    public void setProduct(productDTO product) {
+        Product = product;
     }
 
-    public ArrayList<Integer> getQuantity() {
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setIdProduct(ArrayList<Integer> idProduct) {
-        this.idProduct = idProduct;
-    }
-
-    public void setQuantity(ArrayList<Integer> quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
 }
