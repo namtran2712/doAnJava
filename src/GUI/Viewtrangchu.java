@@ -26,6 +26,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import BUS.productBUS;
 import BUS.validateBUS;
@@ -45,10 +46,12 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Label;
 import java.awt.MenuItem;
 import java.awt.Panel;
 import java.awt.FlowLayout;
@@ -59,6 +62,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 @SuppressWarnings("unused")
 public class Viewtrangchu extends JFrame {
@@ -75,8 +79,17 @@ public class Viewtrangchu extends JFrame {
 	private JButton btn_thanhtoan;
 	private JButton conform;
 	private validateBUS valid;
-	private JPanel phieunhapView;
+	private JLabel showcustomer_phone;
+	private JLabel showcustomer_name;
+	private JLabel showcustomer_id;
+	private JLabel showcustomer_bod;
 	private JPanel khachhangView;
+	private JPanel customer_selected;
+	private Viewkhachhang kh;
+	private JTable tableDataproduct;
+	private DefaultListModel<String> modellist;
+	int idCurrentShow = -1;
+	private JPanel phieunhapView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -126,8 +139,16 @@ public class Viewtrangchu extends JFrame {
 		home_selected = new menuItems("src/icon/home.png", "Trang chủ", 1);
 		menuTrangchu.add(home_selected);
 		home_selected.addMouseListener(mnuctrl);
+		home_selected.addMouseListener(new MouseAdapter() {
 
-		JPanel customer_selected = new JPanel();
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+
+		});
+
+		customer_selected = new JPanel();
 		customer_selected = new menuItems("src/icon/home.png", "Khách hàng", 2);
 		menuTrangchu.add(customer_selected, "khách hàng");
 		customer_selected.addMouseListener(mnuctrl);
@@ -253,13 +274,8 @@ public class Viewtrangchu extends JFrame {
 			itempanel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {
-					// Không biết cái nào đúng nên t accept cả 2 có gì coi và fix lại
-
-					// super.mousePressed(e);
-					// showProduct sw = new showProduct();
-					// sw.showSanPham(product, id);
-
 					super.mousePressed(e);
+					modellist.addElement(name + "x2" + price);
 
 				}
 
@@ -303,6 +319,7 @@ public class Viewtrangchu extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				conform.setEnabled(true);
+				idCurrentShow = -1;
 			}
 
 		});
@@ -325,25 +342,25 @@ public class Viewtrangchu extends JFrame {
 		thongtinkhachhang.add(panel_12);
 		panel_12.setLayout(new GridLayout(2, 2, 0, 0));
 
-		JLabel showcustomer_name = new JLabel("New label");
+		showcustomer_id = new JLabel();
+		showcustomer_id.setHorizontalAlignment(SwingConstants.CENTER);
+		showcustomer_id.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		panel_12.add(showcustomer_id);
+
+		showcustomer_name = new JLabel();
 		showcustomer_name.setHorizontalAlignment(SwingConstants.CENTER);
 		showcustomer_name.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		panel_12.add(showcustomer_name);
 
-		JLabel showcustomer_ = new JLabel("New label");
-		showcustomer_.setHorizontalAlignment(SwingConstants.CENTER);
-		showcustomer_.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		panel_12.add(showcustomer_);
+		showcustomer_phone = new JLabel();
+		showcustomer_phone.setHorizontalAlignment(SwingConstants.CENTER);
+		showcustomer_phone.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		panel_12.add(showcustomer_phone);
 
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		panel_12.add(lblNewLabel_1);
-
-		JLabel lblNewLabel_3 = new JLabel("New label");
-		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		panel_12.add(lblNewLabel_3);
+		showcustomer_bod = new JLabel();
+		showcustomer_bod.setHorizontalAlignment(SwingConstants.CENTER);
+		showcustomer_bod.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		panel_12.add(showcustomer_bod);
 
 		JPanel thongtinsanpham = new JPanel();
 		showthongtin.add(thongtinsanpham);
@@ -351,6 +368,11 @@ public class Viewtrangchu extends JFrame {
 
 		JScrollPane scrollPane = new JScrollPane();
 		thongtinsanpham.add(scrollPane);
+
+		// them moi by nam
+		modellist = new DefaultListModel<>();
+		JList listproduct = new JList<String>(modellist);
+		scrollPane.setViewportView(listproduct);
 
 		JPanel thanhtoan = new JPanel();
 		thanhtoan.setPreferredSize(new Dimension(10, 50));
@@ -363,7 +385,7 @@ public class Viewtrangchu extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(searchbarKh.getText());
+				// System.out.println(searchbarKh.getText());
 			}
 
 		});
@@ -372,7 +394,6 @@ public class Viewtrangchu extends JFrame {
 		khachhangView = new JPanel();
 		khachhangView = new Viewkhachhang().View();
 		container.add(khachhangView, "khách hàng");
-		// khachhangView.setLayout(null);
 
 		JPanel sanphamView = new JPanel();
 		sanphamView = new sanphamGUI().View();
@@ -398,13 +419,14 @@ public class Viewtrangchu extends JFrame {
 		tonkhoView = new Viewtonkho().View();
 		container.add(tonkhoView, "tồn kho");
 
-		JPanel thongkeView = new JPanel();
-		container.add(thongkeView, "thống kê");
+		JPanel thongkeView = new JPanel(new GridLayout());
 		thongkeView = new Viewthongke().View();
+		container.add(thongkeView, "thống kê");
 
 		JPanel taikhoanView = new JPanel();
 		taikhoanView = new Viewtaikhoan().view();
 		container.add(taikhoanView, "tài khoản");
+
 		setVisible(true);
 	}
 
@@ -418,7 +440,8 @@ public class Viewtrangchu extends JFrame {
 		String phoneNum = searchbarKh.getText();
 		valid = new validateBUS();
 		if (!valid.checkEmpty(searchbarKh) && valid.checkPhone(phoneNum)) {
-			customerDTO cus = new customerDao().getCustomerByPhone(phoneNum);
+			customerDao cusD = new customerDao();
+			customerDTO cus = cusD.getCustomerByPhone(phoneNum);
 			if (cus == null) {
 				int check = JOptionPane.showConfirmDialog(this, "Khách hàng không tồn tại có muốn tạo mới khách hàng?");
 				if (check == JOptionPane.YES_OPTION) {
@@ -430,16 +453,34 @@ public class Viewtrangchu extends JFrame {
 						public void windowClosed(WindowEvent e) {
 							if (gui.status == true) {
 								conform.setEnabled(false);
+
 							}
 						}
 					});
+
+					cus = cusD.getCustomerByPhone(phoneNum);
+					showInfoCus(cus);
+					kh.insertCol(cus);
+
 				}
 			} else {
 				conform.setEnabled(false);
+				// moi
+				showInfoCus(cus);
+
 			}
 		} else {
 			JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng số điện thoại", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+
+	}
+
+	public void showInfoCus(customerDTO cus) {
+		showcustomer_id.setText("Id customer: " + cus.getId());
+		showcustomer_name.setText("Name: " + cus.getName());
+		showcustomer_phone.setText("Phone: " + cus.getPhoneNumber());
+		showcustomer_bod.setText("DOB: " + cus.getBirthday());
+		idCurrentShow = cus.getId();
 
 	}
 
