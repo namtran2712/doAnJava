@@ -15,6 +15,7 @@ public class databaseUtil {
 			conn = DriverManager.getConnection(url, user, password);
 
 		} catch (SQLException e) {
+			System.out.println("Loi ket noi data base");
 			e.printStackTrace();
 		}
 

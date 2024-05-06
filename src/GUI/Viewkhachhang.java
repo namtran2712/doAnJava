@@ -30,6 +30,15 @@ public class Viewkhachhang extends JFrame {
 
 	public Viewkhachhang() {
 		listCustomer = new customerBUS();
+		// change by nam
+		model = new DefaultTableModel() {
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+
+		};
 	}
 
 	public JPanel View() {
@@ -51,16 +60,6 @@ public class Viewkhachhang extends JFrame {
 		tableDataKh.setShowGrid(false);
 		tableDataKh.setRowHeight(30);
 
-		tableDataKh.setDefaultRenderer(Object.class, new defaulttablemode());
-
-		model = new DefaultTableModel() {
-
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-
-		};
 		tableDataKh.setModel(model);
 		model.addColumn("Stt");
 		model.addColumn("Id");
@@ -128,5 +127,27 @@ public class Viewkhachhang extends JFrame {
 
 	public void reloadData() {
 		listCustomer = new customerBUS();
+	}
+
+	// them moi by nnam
+	public void insertCol(customerDTO cus) {
+		int i = model.getRowCount();
+		System.out.println(cus.getName());
+		model.insertRow(i, new Object[] {
+				++i,
+				cus.getId(),
+				cus.getName(),
+				cus.getPhoneNumber(),
+				cus.getBirthday(),
+		});
+		listCustomer.getListCustomer().add(cus);
+	}
+
+	public DefaultTableModel getModel() {
+		return model;
+	}
+
+	public void setModel(DefaultTableModel model) {
+		this.model = model;
 	}
 }

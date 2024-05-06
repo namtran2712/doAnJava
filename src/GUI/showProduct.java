@@ -36,9 +36,7 @@ public class showProduct extends JFrame {
 		contentPane = new JDialog(this, "Chi tiết");
 		contentPane.setSize(500, 850);
 		contentPane.setLocationRelativeTo(null);
-		// setUndecorated(true);
 		contentPane.setBackground(new Color(255, 255, 255));
-		// contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		contentPane.setLayout(null);
 

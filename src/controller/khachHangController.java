@@ -19,6 +19,7 @@ import BUS.validateBUS;
 import DTO.customerDTO;
 import GUI.ViewUpdateCustomer;
 import GUI.Viewkhachhang;
+import GUI.Viewtrangchu;
 
 public class khachHangController implements ActionListener, MouseListener, KeyListener {
 
@@ -72,13 +73,14 @@ public class khachHangController implements ActionListener, MouseListener, KeyLi
                 int id = (int) view1.getTableDataKh().getValueAt(i, 1);
                 int result = JOptionPane.showConfirmDialog(view1,
                         "Bạn có chắc muốn xóa không?",
-                        "Xóa nhân viên", JOptionPane.YES_NO_CANCEL_OPTION);
+                        "Xóa khách hàng", JOptionPane.YES_NO_CANCEL_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     boolean check = view1.getListCustomer().deleteCustomer(id);
                     if (check == true) {
                         JOptionPane.showMessageDialog(view1, "Xóa thành công", "Thông báo", JOptionPane.PLAIN_MESSAGE);
                         view1.reloadData();
                         view1.showInfo(view1.getListCustomer().getListCustomer());
+                      
                     } else {
                         JOptionPane.showMessageDialog(view1, "Xóa thất bại", "Thông báo", JOptionPane.PLAIN_MESSAGE);
                     }

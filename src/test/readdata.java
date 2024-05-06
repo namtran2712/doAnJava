@@ -13,6 +13,7 @@ import DAO.productDao;
 import database.databaseUtil;
 
 public class readdata {
+
     private static int idCategory;
     private static int idProduct;
     private static int idMaterial;
@@ -23,7 +24,15 @@ public class readdata {
     private static float price;
 
     public static void main(String[] args) throws FileNotFoundException {
-        FileReader fr = new FileReader("Database\\vongtay.txt");
+        // vong 16->18
+        // bong tai 8-12
+        // kieng 17-19
+        // day chuyen 41-43
+        // nhan 14-17
+        final String pd = "daychuyen";
+        final int szStart = 41;
+        final int szEnd = 43        ;
+        FileReader fr = new FileReader("Database\\" + pd+".txt");
         BufferedReader br = new BufferedReader(fr);
         @SuppressWarnings("unused")
         int i = 0;
@@ -66,8 +75,9 @@ public class readdata {
                 }
 
                 productDao pdao = new productDao();
-                for (int k = 40; k <= 44; k++) {
+                for (int k = szStart; k <= szEnd; k++) {
                     price = (float) (price + (price * 0.05));
+                    quantityRemain = new Random().nextInt(1000);
                     pdao.insertParticularProduct(idProduct, k, price, quantityRemain);
                     priceOfsize.put(k, price);
                 }
