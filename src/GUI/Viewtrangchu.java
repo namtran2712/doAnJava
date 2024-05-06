@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import BUS.productBUS;
 import BUS.validateBUS;
@@ -35,6 +36,7 @@ import DTO.customerDTO;
 import DTO.productDTO;
 import DTO.materialDTO;
 import controller.menuItem_mouseController;
+import DAO.billDao;
 import DAO.categoryDAO;
 import DAO.customerDao;
 import DAO.materialDAO;
@@ -45,6 +47,7 @@ import java.awt.Image;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -86,10 +89,10 @@ public class Viewtrangchu extends JFrame {
 	private JPanel khachhangView;
 	private JPanel customer_selected;
 	private Viewkhachhang kh;
-	private JTable tableDataproduct;
-	private DefaultListModel<String> modellist;
 	int idCurrentShow = -1;
 	private Component phieunhapView;
+	private DefaultTableModel modelDataproduct;
+	private JTable listproductsJTable;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -144,6 +147,7 @@ public class Viewtrangchu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
+
 			}
 
 		});
@@ -255,7 +259,6 @@ public class Viewtrangchu extends JFrame {
 
 		JScrollPane showitem_Product = new JScrollPane();
 		showitem_Product.getVerticalScrollBar().setUnitIncrement(15);
-		;
 		showsanpham.add(showitem_Product);
 
 		JPanel item = new JPanel(new GridLayout(0, 3));
@@ -275,7 +278,19 @@ public class Viewtrangchu extends JFrame {
 				@Override
 				public void mousePressed(MouseEvent e) {
 					super.mousePressed(e);
-					modellist.addElement(name + "x2" + price);
+					int quantitybuy = 0;
+					try {
+						quantitybuy = Integer.valueOf(JOptionPane.showInputDialog(null, "nhập số lượng"));
+					} catch (Exception NumberFormatException) {
+						JOptionPane.showMessageDialog(null, "error", "vui long nhap dung so luong",
+								JOptionPane.ERROR_MESSAGE);
+					}
+
+					int i = modelDataproduct.getRowCount();
+					if (quantitybuy != 0)
+						modelDataproduct.insertRow(i, new Object[] {
+								++i, name, quantitybuy
+						});
 
 				}
 
@@ -364,15 +379,51 @@ public class Viewtrangchu extends JFrame {
 
 		JPanel thongtinsanpham = new JPanel();
 		showthongtin.add(thongtinsanpham);
-		thongtinsanpham.setLayout(new GridLayout(0, 1, 0, 0));
+		thongtinsanpham.setLayout(new BorderLayout());
 
+		JPanel del = new JPanel(new GridLayout());
+		thongtinsanpham.add(del, BorderLayout.NORTH);
+
+		JLabel btnDel = new JLabel("Delete");
+		btnDel.setFont(new Font("arial", Font.ITALIC, 16));
+		btnDel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 20));
+		btnDel.setHorizontalAlignment(SwingConstants.RIGHT);
+		del.add(btnDel);
+
+		btnDel.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				modelDataproduct.removeRow(listproductsJTable.getSelectedRow());
+				super.mousePressed(e);
+			}
+
+		});
 		JScrollPane scrollPane = new JScrollPane();
-		thongtinsanpham.add(scrollPane);
+		thongtinsanpham.add(scrollPane, BorderLayout.CENTER);
 
-		// them moi by nam
-		modellist = new DefaultListModel<>();
-		JList listproduct = new JList<String>(modellist);
-		scrollPane.setViewportView(listproduct);
+		modelDataproduct = new DefaultTableModel();
+
+		modelDataproduct.addColumn("STT");
+		modelDataproduct.addColumn("Product");
+		modelDataproduct.addColumn("Quantity");
+
+		listproductsJTable = new JTable(modelDataproduct);
+		System.out.println(listproductsJTable);
+		scrollPane.setViewportView(listproductsJTable);
+
+		TableColumnModel tableColumnModel = listproductsJTable.getColumnModel();
+		tableColumnModel.getColumn(0).setPreferredWidth(50);
+		tableColumnModel.getColumn(1).setPreferredWidth(200);
+		tableColumnModel.getColumn(2).setPreferredWidth(50);
+
+		JPanel totalPrice = new JPanel(new FlowLayout());
+		thongtinsanpham.add(totalPrice, BorderLayout.SOUTH);
+
+		JLabel pr = new JLabel();
+		pr.setForeground(Color.red);
+		pr.setFont(new Font("arial", Font.BOLD, 18));
+		totalPrice.add(pr);
 
 		JPanel thanhtoan = new JPanel();
 		thanhtoan.setPreferredSize(new Dimension(10, 50));
@@ -381,15 +432,17 @@ public class Viewtrangchu extends JFrame {
 
 		btn_thanhtoan = new JButton("Thanh toán");
 		btn_thanhtoan.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		thanhtoan.add(btn_thanhtoan);
+
+
 		btn_thanhtoan.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// System.out.println(searchbarKh.getText());
+				
 			}
 
 		});
-		thanhtoan.add(btn_thanhtoan);
 		kh = new Viewkhachhang();
 		khachhangView = new JPanel();
 		khachhangView = kh.View();
@@ -465,7 +518,6 @@ public class Viewtrangchu extends JFrame {
 				}
 			} else {
 				conform.setEnabled(false);
-				// moi
 				showInfoCus(cus);
 
 			}
