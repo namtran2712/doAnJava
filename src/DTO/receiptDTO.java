@@ -1,21 +1,25 @@
 package DTO;
 
-import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 
 public class receiptDTO {
     private int idReceipt;
     private staffDTO staff;
     private float totalPrice;
-    private Date dateReceipt;
+    private Time dateReceipt;
     private ArrayList<particularReceiptDTO> particular = new ArrayList<particularReceiptDTO>();
 
-    public receiptDTO(int idReceipt, staffDTO staff, float totalPrice, Date dateReceipt,
+    public receiptDTO() {
+    }
+
+    public receiptDTO(int idReceipt, staffDTO staff, float totalPrice, Time dateReceipt,
             ArrayList<particularReceiptDTO> particular) {
         this.idReceipt = idReceipt;
         this.staff = staff;
         this.totalPrice = totalPrice;
         this.dateReceipt = dateReceipt;
+        particular = new ArrayList<particularReceiptDTO>();
         this.particular = particular;
     }
 
@@ -31,7 +35,7 @@ public class receiptDTO {
         return totalPrice;
     }
 
-    public Date getDateReceipt() {
+    public Time getDateReceipt() {
         return dateReceipt;
     }
 
@@ -47,7 +51,7 @@ public class receiptDTO {
         this.totalPrice = totalPrice;
     }
 
-    public void setDateReceipt(Date dateReceipt) {
+    public void setDateReceipt(Time dateReceipt) {
         this.dateReceipt = dateReceipt;
     }
 
@@ -57,5 +61,29 @@ public class receiptDTO {
 
     public void setParticular(ArrayList<particularReceiptDTO> particular) {
         this.particular = particular;
+    }
+
+    public boolean add(int idProduct, int size, int quantity, float totalPrice) {
+        for (particularReceiptDTO particularReceipt : particular) {
+            if (particularReceipt.getProduct().getIdProduct() == idProduct &&
+                    particularReceipt.getSize() == size) {
+                particularReceipt.setQuantity(particularReceipt.getQuantity() + quantity);
+                this.totalPrice = totalPrice;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean remove(int id) {
+        for (particularReceiptDTO particularReceipt : particular) {
+            if (particularReceipt.getProduct().getIdProduct() == id) {
+                float priceMinus = particularReceipt.getPrice() * particularReceipt.getQuantity();
+                totalPrice -= priceMinus;
+                particular.remove(particularReceipt);
+                return true;
+            }
+        }
+        return false;
     }
 }

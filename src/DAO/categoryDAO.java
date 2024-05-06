@@ -70,6 +70,29 @@ public class categoryDAO implements daoInterface<categoryDTO> {
         return null;
     }
 
+    public categoryDTO selectByName(String name) {
+        Connection conn = databaseUtil.getConnection();
+
+        try {
+            String sql = "SELECT * " +
+                    "FROM CATEGORY " +
+                    "WHERE CATEGORY_NAME = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, name);
+            ResultSet result = pst.executeQuery();
+            while (result.next()) {
+                categoryDTO cate = new categoryDTO(result.getInt("ID_CATEGORY"),
+                        result.getString("CATEGORY_NAME"));
+                databaseUtil.closeConnection(conn);
+                return cate;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public ArrayList<categoryDTO> selectByCondition(String condition) {
         return null;

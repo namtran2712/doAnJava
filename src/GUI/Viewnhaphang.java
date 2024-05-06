@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -15,14 +16,21 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
 import DAO.accountDao;
+import DAO.categoryDAO;
+import DAO.materialDAO;
+import DAO.receiptDao;
 import DTO.accountDTO;
 import DTO.databaseProduct;
+import DTO.particularReceiptDTO;
 import DTO.productDTO;
+import DTO.receiptDTO;
 import controller.nhapHangController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +53,8 @@ public class Viewnhaphang extends JFrame {
         public JComboBox<String> comboSize;
         private DefaultTableModel modelNhapSp;
         private JLabel lbTotal;
+        private receiptDTO receipt;
+        private accountDTO acc;
 
         public JComboBox<String> getComboSize() {
                 return comboSize;
@@ -52,6 +62,7 @@ public class Viewnhaphang extends JFrame {
 
         public Viewnhaphang() {
                 listProduct = new databaseProduct().getDao().selectAll();
+                receipt = new receiptDTO();
         }
 
         public JTextField getTfName() {
@@ -102,8 +113,24 @@ public class Viewnhaphang extends JFrame {
                 return tbListProducts;
         }
 
+        public receiptDTO getReceipt() {
+                return receipt;
+        }
+
+        public void setReceipt(receiptDTO receipt) {
+                this.receipt = receipt;
+        }
+
+        public accountDTO getAcc() {
+                return acc;
+        }
+
+        public void setAcc(accountDTO acc) {
+                this.acc = acc;
+        }
+
         public JPanel nhaphang(String username) {
-                accountDTO acc = new accountDao().selectByUsername(username);
+                acc = new accountDao().selectByUsername(username);
 
                 nhapHang = new JPanel();
                 setContentPane(nhapHang);
@@ -316,7 +343,7 @@ public class Viewnhaphang extends JFrame {
                 Font fontPrice = new Font("hahahuhu", Font.BOLD, 15);
 
                 JLabel lbTotalPrice = new JLabel("TỔNG TIỀN:", JLabel.CENTER);
-                lbTotal = new JLabel("0 đ", JLabel.CENTER);
+                lbTotal = new JLabel("0đ", JLabel.CENTER);
 
                 lbTotalPrice.setFont(fontTotal);
                 lbTotalPrice.setForeground(Color.RED);
@@ -335,7 +362,15 @@ public class Viewnhaphang extends JFrame {
                 btnNhapHang.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-
+                                if (item.convertPrice(lbTotal.getText()) == 0) {
+                                        JOptionPane.showMessageDialog(null, "Bạn chưa nhập sản phẩm nào", "Thông báo",
+                                                        JOptionPane.PLAIN_MESSAGE);
+                                } else {
+                                        new receiptDao().insert(receipt);
+                                        receipt = new receiptDTO();
+                                        lbTotal.setText("0đ");
+                                        loadDataReceipt();
+                                }
                         }
                 });
 
@@ -362,6 +397,45 @@ public class Viewnhaphang extends JFrame {
                 //////////////////////////////// ///////////////////////////////
 
                 tbNhapSp = new JTable();
+                tbNhapSp.addMouseListener(new MouseListener() {
+
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                                if (e.getClickCount() == 2) {
+                                        int i = tbNhapSp.getSelectedRow();
+                                        int id = (int) tbNhapSp.getValueAt(i, 1);
+                                        System.out.println(id);
+                                        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa không",
+                                                        "Xóa sản phẩm nhập", JOptionPane.YES_NO_CANCEL_OPTION);
+                                        if (result == JOptionPane.YES_OPTION) {
+                                                receipt.remove(id);
+                                                lbTotal.setText(item.price(receipt.getTotalPrice()));
+                                                loadDataReceipt();
+                                        }
+                                }
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+
+                        }
+
+                });
 
                 JScrollPane spNhapSp = new JScrollPane(tbNhapSp);
 
@@ -418,6 +492,27 @@ public class Viewnhaphang extends JFrame {
                 for (int i = 0; i < listProduct.size(); i++) {
                         modelListProducts.insertRow(i, new Object[] { i + 1, listProduct.get(i).getIdProduct(),
                                         listProduct.get(i).getName()
+                        });
+                }
+        }
+
+        public void loadDataReceipt() {
+                modelNhapSp.setRowCount(0);
+                int i = 0;
+                for (particularReceiptDTO p : receipt.getParticular()) {
+                        String materialName = new materialDAO().selectByID(p.getProduct().getIdMaterial())
+                                        .getMaterial();
+                        String categoryName = new categoryDAO().selectByID(p.getProduct().getIdCategory())
+                                        .getCategoryName();
+                        modelNhapSp.addRow(new Object[] {
+                                        ++i,
+                                        p.getProduct().getIdProduct(),
+                                        p.getProduct().getName(),
+                                        categoryName,
+                                        materialName,
+                                        p.getSize(),
+                                        item.price(p.getPrice()),
+                                        p.getQuantity()
                         });
                 }
         }

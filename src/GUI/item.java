@@ -41,6 +41,12 @@ public class item extends JFrame {
 		return formattedPrice;
 	}
 
+	public static float convertPrice(String s) {
+		float price = Float.parseFloat(
+				s.substring(0, s.length() - 1).replace(",", ""));
+		return price;
+	};
+
 	public JPanel createItem(String nameProduct, String priceProduct, String catagogries, String imgProduct) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
