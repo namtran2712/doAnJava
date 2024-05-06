@@ -17,7 +17,10 @@ import DAO.productDao;
 import DTO.categoryDTO;
 import DTO.materialDTO;
 import DTO.particularProduct;
+import DTO.particularReceiptDTO;
 import DTO.productDTO;
+import DTO.receiptDTO;
+import DTO.staffDTO;
 import GUI.Viewnhaphang;
 import GUI.item;
 
@@ -58,17 +61,63 @@ public class nhapHangController implements MouseListener, ActionListener {
                         JOptionPane.showMessageDialog(null, "Vui lòng nhập số lớn hơn 0", "Cảnh báo",
                                 JOptionPane.WARNING_MESSAGE);
                     } else {
-                        view.getModelNhapSp().insertRow(
-                                view.getModelNhapSp().getRowCount(),
-                                new Object[] { this.view.getModelNhapSp().getRowCount() + 1,
-                                        this.view.getTfId().getText(),
-                                        this.view.getTfName().getText(),
-                                        this.view.getTfCateogry().getText(),
-                                        this.view.getTfMaterial().getText(),
-                                        this.view.comboSize.getSelectedItem(),
-                                        this.view.getTfPrice().getText(),
-                                        this.view.getTfQuantity().getText()
-                                });
+                        int idMaterial = new materialDAO().selectByName(this.view.getTfMaterial().getText()).getId();
+                        int idCategory = new categoryDAO().selectByName(this.view.getTfCateogry().getText())
+                                .getIdProduct();
+
+                        if (this.view.getReceipt().getStaff() == null) {
+                            staffDTO staff = new staffDTO(this.view.getAcc().getNhanVien().getId(),
+                                    this.view.getTfName().getText(),
+                                    null,
+                                    null,
+                                    0,
+                                    null);
+                            productDTO product = new productDTO(
+                                    Integer.parseInt(this.view.getTfId().getText()),
+                                    idCategory,
+                                    idMaterial,
+                                    this.view.getTfName().getText(),
+                                    0,
+                                    null,
+                                    null);
+                            particularReceiptDTO particular = new particularReceiptDTO(
+                                    0,
+                                    product,
+                                    Integer.parseInt((String) this.view.comboSize.getSelectedItem()),
+                                    Integer.parseInt(this.view.getTfQuantity().getText()),
+                                    item.convertPrice(this.view.getTfPrice().getText()));
+                            receiptDTO receipt = new receiptDTO(0,
+                                    staff,
+                                    item.convertPrice(this.view.getLbTotal().getText()),
+                                    null,
+                                    null);
+                            receipt.getParticular().add(particular);
+                            this.view.setReceipt(receipt);
+                        } else {
+                            productDTO product = new productDTO(
+                                    Integer.parseInt(this.view.getTfId().getText()),
+                                    idCategory,
+                                    idMaterial,
+                                    this.view.getTfName().getText(),
+                                    0,
+                                    null,
+                                    null);
+                            particularReceiptDTO particular = new particularReceiptDTO(
+                                    0,
+                                    product,
+                                    Integer.parseInt((String) this.view.comboSize.getSelectedItem()),
+                                    Integer.parseInt(this.view.getTfQuantity().getText()),
+                                    item.convertPrice(this.view.getTfPrice().getText()));
+                            if (!this.view.getReceipt().add(
+                                    Integer.parseInt(this.view.getTfId().getText()),
+                                    Integer.parseInt((String) this.view.comboSize.getSelectedItem()),
+                                    Integer.parseInt(this.view.getTfQuantity().getText()),
+                                    item.convertPrice(this.view.getLbTotal().getText()))) {
+                                this.view.getReceipt().getParticular().add(particular);
+                            }
+                        }
+
+                        this.view.loadDataReceipt();
 
                         float price = 0;
                         for (int k = 0; k < view.getModelNhapSp().getRowCount(); k++) {
@@ -83,6 +132,7 @@ public class nhapHangController implements MouseListener, ActionListener {
                                     * Integer.parseInt(view.getModelNhapSp().getValueAt(k, 7) + "");
                         }
                         this.view.getLbTotal().setText(item.price(price));
+                        this.view.getReceipt().setTotalPrice(price);
                     }
                 } catch (NumberFormatException e1) {
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập nguyên", "Cảnh báo",

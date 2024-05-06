@@ -398,7 +398,12 @@ public class Viewtrangchu extends JFrame {
 	}
 
 	public void changePage(String page) {
+<<<<<<< HEAD
 		page.toLowerCase();
+=======
+		container.revalidate();
+		container.repaint();
+>>>>>>> e12d11ca995c72efef8b9a7b2d30953a117698e0
 		card.show(container, page.toLowerCase());
 	}
 

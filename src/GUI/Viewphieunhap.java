@@ -1,6 +1,9 @@
 package GUI;
 
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -8,16 +11,28 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+import BUS.receiptBUS;
+import DAO.receiptDao;
+import DTO.receiptDTO;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 public class Viewphieunhap extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel viewPanel;
 	private DefaultTableModel modelPhieuNhap;
+	private receiptBUS list;
+
+	public Viewphieunhap() {
+		list = new receiptBUS();
+	}
 
 	@SuppressWarnings("unused")
 	public JPanel View() {
@@ -48,7 +63,40 @@ public class Viewphieunhap extends JFrame {
 			}
 
 		};
+
 		tbPhieuNhap.setModel(modelPhieuNhap);
+		tbPhieuNhap.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					int i = tbPhieuNhap.getSelectedRow();
+					int id = (int) tbPhieuNhap.getValueAt(i, 1);
+					JDialog showParticular = new viewParticularReceipt().view(list.findById(id));
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+
+		});
 
 		tbPhieuNhap.setShowGrid(false);
 		tbPhieuNhap.setRowHeight(30);
@@ -75,13 +123,64 @@ public class Viewphieunhap extends JFrame {
 		tableColumnModel1.getColumn(3).setPreferredWidth(50);
 		tableColumnModel1.getColumn(4).setPreferredWidth(50);
 
+		showInfo(list.getList());
+
 		panel.add(spPhieuNhap);
 
 		menuChucNang chucnang = new menuChucNang();
+		chucnang.see_btn.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(e.getClickCount());
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
+			}
+
+		});
 
 		viewPanel.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
 		viewPanel.add(panel, BorderLayout.CENTER);
 		return viewPanel;
+	}
 
+	public void showInfo(ArrayList<receiptDTO> list) {
+		modelPhieuNhap.setRowCount(0);
+		int i = 0;
+		for (receiptDTO receipt : list) {
+			modelPhieuNhap.addRow(new Object[] {
+					++i,
+					receipt.getIdReceipt(),
+					receipt.getStaff().getName(),
+					receipt.getDateReceipt(),
+					item.price(receipt.getTotalPrice())
+			});
+		}
+	}
+
+	public void reloadData() {
+		list.setList(new receiptDao().selectAll());
 	}
 }

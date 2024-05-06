@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import DTO.categoryDTO;
 import DTO.materialDTO;
 import database.databaseUtil;
 
@@ -60,6 +61,29 @@ public class materialDAO implements daoInterface<materialDTO> {
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public materialDTO selectByName(String name) {
+        Connection conn = databaseUtil.getConnection();
+
+        try {
+            String sql = "SELECT * " +
+                    "FROM MATERIAL " +
+                    "WHERE MATERIAL_NAME = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, name);
+            ResultSet result = pst.executeQuery();
+            while (result.next()) {
+                materialDTO mate = new materialDTO(result.getInt("ID_MATERIAL"),
+                        result.getString("MATERIAL_NAME"));
+                databaseUtil.closeConnection(conn);
+                return mate;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
