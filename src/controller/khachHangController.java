@@ -103,6 +103,8 @@ public class khachHangController implements ActionListener, MouseListener, KeyLi
                     }
                 });
             }
+        } else if (btn.getText().equals("Thêm")) {
+
         }
     }
 

@@ -29,4 +29,38 @@ public class receiptBUS {
         }
         return null;
     }
+
+    public boolean deleteById(int id) {
+        for (receiptDTO receipt : list) {
+            if (receipt.getIdReceipt() == id) {
+                list.remove(receipt);
+                dao.delete(receipt);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<receiptDTO> selectByNameStaff(String name) {
+        ArrayList<receiptDTO> l = new ArrayList<receiptDTO>();
+        for (receiptDTO receiptDTO : list) {
+            if (receiptDTO.getStaff().getName().toLowerCase().indexOf(name) != -1) {
+                l.add(receiptDTO);
+            }
+        }
+
+        return l;
+    }
+
+    public ArrayList<receiptDTO> selectById(int id) {
+        ArrayList<receiptDTO> l = new ArrayList<receiptDTO>();
+        for (receiptDTO receiptDTO : list) {
+            if (receiptDTO.getIdReceipt() == id) {
+                l.add(receiptDTO);
+            }
+        }
+
+        return l;
+    }
+
 }

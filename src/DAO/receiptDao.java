@@ -78,6 +78,21 @@ public class receiptDao implements daoInterface<receiptDTO> {
 
     @Override
     public boolean delete(receiptDTO t) {
+        Connection conn = databaseUtil.getConnection();
+
+        try {
+            String sql = "DELETE FROM RECEIPTS WHERE ID_RECEIPT = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, t.getIdReceipt());
+            int rows = pst.executeUpdate();
+
+            databaseUtil.closeConnection(conn);
+            return rows > 0;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        databaseUtil.closeConnection(conn);
         return false;
     }
 
@@ -137,7 +152,7 @@ public class receiptDao implements daoInterface<receiptDTO> {
                             result.getInt("ID_RECEIPT"),
                             staff,
                             result.getFloat("TOTAL_PRICE"),
-                            result.getTime("DATE_RECEIPT"),
+                            result.getTimestamp("DATE_RECEIPT"),
                             particular);
                     receipt.getParticular().add(tmp);
 
@@ -166,8 +181,7 @@ public class receiptDao implements daoInterface<receiptDTO> {
             return list;
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
         }
         databaseUtil.closeConnection(conn);
         return null;

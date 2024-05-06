@@ -19,14 +19,16 @@ import javax.swing.table.TableColumnModel;
 
 import DAO.categoryDAO;
 import DAO.materialDAO;
+import DTO.particularProduct;
 import DTO.particularReceiptDTO;
+import DTO.productDTO;
 import DTO.receiptDTO;
 
-public class viewParticularReceipt extends JFrame {
+public class viewParticularProduct extends JFrame {
 
     private DefaultTableModel model;
 
-    public JDialog view(receiptDTO receipt) {
+    public JDialog view(productDTO product) {
         JDialog viewParticular = new JDialog();
         viewParticular.setTitle("Chi tiết phiếu nhập");
         viewParticular.setSize(700, 470);
@@ -35,7 +37,7 @@ public class viewParticularReceipt extends JFrame {
 
         JPanel panelHeader = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-        JLabel labelTitle = new JLabel("Danh sách sản phẩm đã đặt", JLabel.CENTER);
+        JLabel labelTitle = new JLabel("Chi tiết sản phẩm", JLabel.CENTER);
         labelTitle.setFont(new Font("Arial", Font.BOLD, 20));
         labelTitle.setForeground(Color.PINK);
         panelHeader.add(labelTitle);
@@ -59,8 +61,6 @@ public class viewParticularReceipt extends JFrame {
 
         model.addColumn("STT");
         model.addColumn("Tên sản phẩm");
-        model.addColumn("Loại");
-        model.addColumn("Chất liệu");
         model.addColumn("Size");
         model.addColumn("Giá");
         model.addColumn("Số lượng");
@@ -73,18 +73,16 @@ public class viewParticularReceipt extends JFrame {
         headerTable.setForeground(new Color(255, 0, 127));
 
         TableColumnModel tableColumnModel1 = table.getColumnModel();
-        tableColumnModel1.getColumn(0).setPreferredWidth(50);
-        tableColumnModel1.getColumn(1).setPreferredWidth(150);
-        tableColumnModel1.getColumn(2).setPreferredWidth(80);
-        tableColumnModel1.getColumn(3).setPreferredWidth(80);
-        tableColumnModel1.getColumn(4).setPreferredWidth(50);
-        tableColumnModel1.getColumn(5).setPreferredWidth(150);
-        tableColumnModel1.getColumn(6).setPreferredWidth(100);
+        tableColumnModel1.getColumn(0).setPreferredWidth(30);
+        tableColumnModel1.getColumn(1).setPreferredWidth(300);
+        tableColumnModel1.getColumn(2).setPreferredWidth(30);
+        tableColumnModel1.getColumn(3).setPreferredWidth(50);
+        tableColumnModel1.getColumn(4).setPreferredWidth(100);
 
         viewParticular.add(panelHeader, BorderLayout.NORTH);
         viewParticular.add(scrollPane, BorderLayout.CENTER);
 
-        loadData(receipt);
+        loadData(product);
 
         viewParticular.setModalityType(ModalityType.MODELESS);
         viewParticular.setModal(true);
@@ -92,23 +90,18 @@ public class viewParticularReceipt extends JFrame {
         return viewParticular;
     }
 
-    public void loadData(receiptDTO receipt) {
+    public void loadData(productDTO product) {
         model.setRowCount(0);
         int i = 0;
-
-        for (particularReceiptDTO particular : receipt.getParticular()) {
-            String category = new categoryDAO().selectByID(particular.getProduct().getIdCategory()).getCategoryName();
-            String material = new materialDAO().selectByID(particular.getProduct().getIdMaterial()).getMaterial();
-
+        for (particularProduct items : product.getParticularProducts()) {
             model.addRow(new Object[] {
                     ++i,
-                    particular.getProduct().getName(),
-                    category,
-                    material,
-                    particular.getSize(),
-                    item.price(particular.getPrice()),
-                    particular.getQuantity()
+                    product.getName(),
+                    items.getSize(),
+                    item.price(items.getPrice()),
+                    items.getQuantityRemain()
             });
         }
+
     }
 }

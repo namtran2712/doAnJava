@@ -34,16 +34,16 @@ public class item extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel container;
 
-	public static String price(float gia) {
+	public static String price(float d) {
 		DecimalFormat df = new DecimalFormat();
 		df.applyPattern("###,###.##");
-		String formattedPrice = df.format(gia) + "đ";
+		String formattedPrice = df.format(d) + "đ";
 		return formattedPrice;
 	}
 
 	public static float convertPrice(String s) {
 		float price = Float.parseFloat(
-				s.substring(0, s.length() - 1).replace(",", ""));
+				s.substring(0, s.length() - 1).replace(".", ""));
 		return price;
 	};
 

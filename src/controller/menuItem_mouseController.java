@@ -26,6 +26,7 @@ public class menuItem_mouseController extends MouseAdapter {
 
         menuItems label = (menuItems) e.getComponent();
         label.setIselected(label.getParent().getComponentZOrder(label) + 1 == label.getIndex());
+        view.loadViewAll();
         view.changePage(label.getText());
     }
 

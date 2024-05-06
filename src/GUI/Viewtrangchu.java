@@ -13,6 +13,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -87,7 +88,8 @@ public class Viewtrangchu extends JFrame {
 	private Viewkhachhang kh;
 	private JTable tableDataproduct;
 	private DefaultListModel<String> modellist;
-	int idCurrentShow =-1;
+	int idCurrentShow = -1;
+	private Component phieunhapView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -107,6 +109,7 @@ public class Viewtrangchu extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1300, 750);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -124,7 +127,6 @@ public class Viewtrangchu extends JFrame {
 						Color.decode("#800080"));
 				g2d.setPaint(gp);
 				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-
 			}
 		};
 
@@ -137,6 +139,14 @@ public class Viewtrangchu extends JFrame {
 		home_selected = new menuItems("src/icon/home.png", "Trang chủ", 1);
 		menuTrangchu.add(home_selected);
 		home_selected.addMouseListener(mnuctrl);
+		home_selected.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+
+		});
 
 		customer_selected = new JPanel();
 		customer_selected = new menuItems("src/icon/home.png", "Khách hàng", 2);
@@ -186,6 +196,33 @@ public class Viewtrangchu extends JFrame {
 		menuItems exit = new menuItems("src/icon/home.png", "Đăng xuất", 11);
 		exit.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(exit);
+		exit.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+				new formLoginView("", "");
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+		});
 
 		container = new JPanel();
 		container.setBackground(new Color(255, 255, 255));
@@ -238,7 +275,7 @@ public class Viewtrangchu extends JFrame {
 				@Override
 				public void mousePressed(MouseEvent e) {
 					super.mousePressed(e);
-					modellist.addElement(name+ "x2"+ price);
+					modellist.addElement(name + "x2" + price);
 
 				}
 
@@ -282,7 +319,7 @@ public class Viewtrangchu extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				conform.setEnabled(true);
-				idCurrentShow =-1;
+				idCurrentShow = -1;
 			}
 
 		});
@@ -334,9 +371,8 @@ public class Viewtrangchu extends JFrame {
 
 		// them moi by nam
 		modellist = new DefaultListModel<>();
-		JList listproduct =new JList<String>(modellist);
+		JList listproduct = new JList<String>(modellist);
 		scrollPane.setViewportView(listproduct);
-		
 
 		JPanel thanhtoan = new JPanel();
 		thanhtoan.setPreferredSize(new Dimension(10, 50));
@@ -354,12 +390,10 @@ public class Viewtrangchu extends JFrame {
 
 		});
 		thanhtoan.add(btn_thanhtoan);
-		// chage by nam
 		kh = new Viewkhachhang();
 		khachhangView = new JPanel();
 		khachhangView = kh.View();
 		container.add(khachhangView, "khách hàng");
-		// khachhangView.setLayout(null);
 
 		JPanel sanphamView = new JPanel();
 		sanphamView = new sanphamGUI().View();
@@ -377,7 +411,7 @@ public class Viewtrangchu extends JFrame {
 		phieuxuatView = new Viewphieuxuat().View();
 		container.add(phieuxuatView, "phiếu xuất");
 
-		JPanel phieunhapView = new JPanel();
+		phieunhapView = new JPanel();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
 
@@ -392,18 +426,13 @@ public class Viewtrangchu extends JFrame {
 		JPanel taikhoanView = new JPanel();
 		taikhoanView = new Viewtaikhoan().view();
 		container.add(taikhoanView, "tài khoản");
-		
-		
+
 		setVisible(true);
 	}
 
 	public void changePage(String page) {
-<<<<<<< HEAD
-		page.toLowerCase();
-=======
 		container.revalidate();
 		container.repaint();
->>>>>>> e12d11ca995c72efef8b9a7b2d30953a117698e0
 		card.show(container, page.toLowerCase());
 	}
 
@@ -429,7 +458,6 @@ public class Viewtrangchu extends JFrame {
 						}
 					});
 
-					// them moi by nam
 					cus = cusD.getCustomerByPhone(phoneNum);
 					showInfoCus(cus);
 					kh.insertCol(cus);
@@ -447,7 +475,6 @@ public class Viewtrangchu extends JFrame {
 
 	}
 
-	// them moi by nam
 	public void showInfoCus(customerDTO cus) {
 		showcustomer_id.setText("Id customer: " + cus.getId());
 		showcustomer_name.setText("Name: " + cus.getName());
@@ -457,6 +484,10 @@ public class Viewtrangchu extends JFrame {
 
 	}
 
-
+	public void loadViewAll() {
+		container.remove(phieunhapView);
+		phieunhapView = new Viewphieunhap().View();
+		container.add(phieunhapView, "phiếu nhập");
+	}
 
 }

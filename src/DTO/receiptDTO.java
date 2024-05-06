@@ -1,19 +1,19 @@
 package DTO;
 
-import java.sql.Time;
 import java.util.ArrayList;
+import java.sql.Timestamp;
 
 public class receiptDTO {
     private int idReceipt;
     private staffDTO staff;
     private float totalPrice;
-    private Time dateReceipt;
+    private Timestamp dateReceipt;
     private ArrayList<particularReceiptDTO> particular = new ArrayList<particularReceiptDTO>();
 
     public receiptDTO() {
     }
 
-    public receiptDTO(int idReceipt, staffDTO staff, float totalPrice, Time dateReceipt,
+    public receiptDTO(int idReceipt, staffDTO staff, float totalPrice, Timestamp dateReceipt,
             ArrayList<particularReceiptDTO> particular) {
         this.idReceipt = idReceipt;
         this.staff = staff;
@@ -35,7 +35,7 @@ public class receiptDTO {
         return totalPrice;
     }
 
-    public Time getDateReceipt() {
+    public Timestamp getDateReceipt() {
         return dateReceipt;
     }
 
@@ -51,7 +51,7 @@ public class receiptDTO {
         this.totalPrice = totalPrice;
     }
 
-    public void setDateReceipt(Time dateReceipt) {
+    public void setDateReceipt(Timestamp dateReceipt) {
         this.dateReceipt = dateReceipt;
     }
 

@@ -17,8 +17,8 @@ VALUES("bạc"),
     ("vàng"),
     ("bạch kim");
 INSERT INTO category (CATEGORY_NAME)
-VALUES ("dây chuyền"),
-    ("vòng tay"),
-    ("bông tai"),
-    ("nhẫn"),
-    ("kiềng");
+VALUES ("nhẫn"),
+("dây chuyền"),
+("bông tai"),
+("kiềng"),
+ ("vòng tay");

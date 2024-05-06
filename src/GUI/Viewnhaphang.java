@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
+import BUS.productBUS;
 import DAO.accountDao;
 import DAO.categoryDAO;
 import DAO.materialDAO;
@@ -29,6 +30,8 @@ import controller.nhapHangController;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -38,7 +41,7 @@ import java.util.ArrayList;
  */
 public class Viewnhaphang extends JFrame {
         private JPanel nhapHang;
-        ArrayList<productDTO> listProduct;
+        productBUS list;
         private DefaultTableModel modelListProducts;
         private JTable tbListProducts;
         private JTable tbNhapSp;
@@ -55,13 +58,31 @@ public class Viewnhaphang extends JFrame {
         private JLabel lbTotal;
         private receiptDTO receipt;
         private accountDTO acc;
+        private JTextField tfQuantityRemain;
+        private JTextField tfQuantityReceipt;
+
+        public JTextField getTfQuantityRemain() {
+                return tfQuantityRemain;
+        }
+
+        public void setTfQuantityRemain(JTextField tfQuantityRemain) {
+                this.tfQuantityRemain = tfQuantityRemain;
+        }
+
+        public JTextField getTfQuantityReceipt() {
+                return tfQuantityReceipt;
+        }
+
+        public void setTfQuantityReceipt(JTextField tfQuantityReceipt) {
+                this.tfQuantityReceipt = tfQuantityReceipt;
+        }
 
         public JComboBox<String> getComboSize() {
                 return comboSize;
         }
 
         public Viewnhaphang() {
-                listProduct = new databaseProduct().getDao().selectAll();
+                list = new productBUS();
                 receipt = new receiptDTO();
         }
 
@@ -146,12 +167,49 @@ public class Viewnhaphang extends JFrame {
                 JPanel jpContainer = new JPanel(new GridLayout(1, 3, 10, 10));
                 JPanel jpBottom = new JPanel();
 
-                JLabel lbTop = new JLabel("");
-                @SuppressWarnings("unused")
-                menuChucNang chucnang = new menuChucNang();
-                // jpTop.add(chucnang.createmenuChucNang());
-                lbTop.setFont(fontText);
-                jpTop.add(lbTop);
+                JComboBox<String> comboBox = new JComboBox<String>();
+                comboBox.setMaximumRowCount(17);
+                comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 17));
+                jpTop.add(comboBox);
+                comboBox.addItem("Tất cả");
+                comboBox.addItem("Theo tên");
+                comboBox.addItem("Theo id");
+                comboBox.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                String selected = (String) comboBox.getSelectedItem();
+                                if (selected.equals("Tất cả")) {
+                                        loadData(list.getListProduct());
+                                }
+
+                        }
+                });
+                comboBox.setSelectedItem(0);
+                comboBox.setPreferredSize(new Dimension(150, 30));
+                JTextField tfSearch = new JTextField(25);
+                tfSearch.setFont(new Font("search", ABORT, 20));
+                tfSearch.addKeyListener(new KeyListener() {
+
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                        }
+
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                        }
+
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+                                String cbb = comboBox.getSelectedItem() + "";
+                                if (cbb.equals("Theo tên")) {
+                                        loadData(list.selectByName(tfSearch.getText()));
+                                } else if (cbb.equals("Theo id")) {
+                                        loadData(list.selectById(Integer.parseInt(tfSearch.getText())));
+                                }
+                        }
+
+                });
+                jpTop.add(tfSearch);
 
                 ///////////////////////////////////////// CONTAINER//////////////////////////////////////////////////////
 
@@ -191,7 +249,7 @@ public class Viewnhaphang extends JFrame {
                 tableColumnModel.getColumn(1).setPreferredWidth(80);
                 tableColumnModel.getColumn(2).setPreferredWidth(400);
 
-                loadData();
+                loadData(list.getListProduct());
 
                 /////////////////// INFOR-PRODUCT ///////////////////////////
 
@@ -209,10 +267,11 @@ public class Viewnhaphang extends JFrame {
                 JLabel lbMaterial = new JLabel("Chất liệu");
                 JLabel lbSize = new JLabel("Size");
                 JLabel lbPrice = new JLabel("Giá");
-                JLabel lbQuantity = new JLabel("Số lượng");
+                JLabel lbQuantityRemain = new JLabel("SL còn");
+                JLabel lbQuantityReceipt = new JLabel("SL nhập");
                 JLabel lbEmty1 = new JLabel("                              ");
                 JLabel lbEmty2 = new JLabel("                              ");
-                JLabel lbEmty3 = new JLabel("                              ");
+                // JLabel lbEmty3 = new JLabel(" ");
                 JLabel lbEmty4 = new JLabel(
                                 "                                                                                 ");
 
@@ -221,8 +280,9 @@ public class Viewnhaphang extends JFrame {
                 lbCategory.setPreferredSize(new Dimension(140, 20));
                 lbMaterial.setPreferredSize(new Dimension(220, 20));
                 lbSize.setPreferredSize(new Dimension(100, 20));
-                lbPrice.setPreferredSize(new Dimension(240, 20));
-                lbQuantity.setPreferredSize(new Dimension(80, 20));
+                lbQuantityRemain.setPreferredSize(new Dimension(140, 20));
+                lbPrice.setPreferredSize(new Dimension(100, 20));
+                lbQuantityReceipt.setPreferredSize(new Dimension(60, 20));
 
                 comboSize = new JComboBox<>();
                 comboSize.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -237,8 +297,9 @@ public class Viewnhaphang extends JFrame {
                 tfCateogry = new JTextField(10);
                 tfMaterial = new JTextField(9);
                 comboSize.setPreferredSize(new Dimension(100, 25));
-                tfPrice = new JTextField(10);
-                tfQuantity = new JTextField(6);
+                tfPrice = new JTextField(11);
+                tfQuantityRemain = new JTextField(6);
+                tfQuantityReceipt = new JTextField(6);
 
                 tfName.setEnabled(false);
                 tfName.setDisabledTextColor(Color.BLACK);
@@ -250,20 +311,24 @@ public class Viewnhaphang extends JFrame {
                 tfMaterial.setDisabledTextColor(Color.BLACK);
                 tfPrice.setEnabled(false);
                 tfPrice.setDisabledTextColor(Color.BLACK);
+                tfQuantityRemain.setEnabled(false);
+                tfQuantityRemain.setDisabledTextColor(Color.BLACK);
 
-                tfName.setHorizontalAlignment(SwingConstants.CENTER);
+                tfName.setHorizontalAlignment(SwingConstants.LEFT);
                 tfId.setHorizontalAlignment(SwingConstants.CENTER);
                 tfCateogry.setHorizontalAlignment(SwingConstants.CENTER);
                 tfMaterial.setHorizontalAlignment(SwingConstants.CENTER);
                 tfPrice.setHorizontalAlignment(SwingConstants.CENTER);
-                tfQuantity.setHorizontalAlignment(SwingConstants.CENTER);
+                tfQuantityRemain.setHorizontalAlignment(SwingConstants.CENTER);
+                tfQuantityReceipt.setHorizontalAlignment(SwingConstants.CENTER);
 
                 tfName.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
                 tfId.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
                 tfCateogry.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
                 tfMaterial.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
                 tfPrice.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
-                tfQuantity.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
+                tfQuantityRemain.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
+                tfQuantityReceipt.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
 
                 tfName.setFont(fontText);
                 tfId.setFont(fontText);
@@ -271,7 +336,8 @@ public class Viewnhaphang extends JFrame {
                 tfMaterial.setFont(fontText);
                 comboSize.setFont(fontText);
                 tfPrice.setFont(fontText);
-                tfQuantity.setFont(fontText);
+                tfQuantityRemain.setFont(fontText);
+                tfQuantityReceipt.setFont(fontText);
 
                 jp1.add(lbName);
                 jp1.add(tfName);
@@ -288,11 +354,12 @@ public class Viewnhaphang extends JFrame {
                 jp3.add(lbEmty2);
                 jp3.add(comboSize);
 
+                jp4.add(lbQuantityRemain);
                 jp4.add(lbPrice);
-                jp4.add(lbQuantity);
+                jp4.add(lbQuantityReceipt);
+                jp4.add(tfQuantityRemain);
                 jp4.add(tfPrice);
-                jp4.add(lbEmty3);
-                jp4.add(tfQuantity);
+                jp4.add(tfQuantityReceipt);
 
                 JButton btnAdd = new JButton("Nhập sản phẩm");
                 btnAdd.addActionListener(new nhapHangController(this));
@@ -488,10 +555,12 @@ public class Viewnhaphang extends JFrame {
                 return nhapHang;
         }
 
-        public void loadData() {
-                for (int i = 0; i < listProduct.size(); i++) {
-                        modelListProducts.insertRow(i, new Object[] { i + 1, listProduct.get(i).getIdProduct(),
-                                        listProduct.get(i).getName()
+        public void loadData(ArrayList<productDTO> listProduct) {
+                modelListProducts.setRowCount(0);
+                int i = 0;
+                for (productDTO productDTO : listProduct) {
+                        modelListProducts.addRow(new Object[] { i + 1, productDTO.getIdProduct(),
+                                        productDTO.getName()
                         });
                 }
         }

@@ -4,6 +4,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -19,6 +20,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -72,7 +79,82 @@ public class Viewphieunhap extends JFrame {
 				if (e.getClickCount() == 2) {
 					int i = tbPhieuNhap.getSelectedRow();
 					int id = (int) tbPhieuNhap.getValueAt(i, 1);
-					JDialog showParticular = new viewParticularReceipt().view(list.findById(id));
+					receiptDTO receipt = list.findById(id);
+					JDialog viewParticular = new viewParticularReceipt().view(receipt);
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+
+		});
+
+		tbPhieuNhap.setShowGrid(false);
+		tbPhieuNhap.setRowHeight(30);
+		tbPhieuNhap.setDefaultRenderer(Object.class, new defaulttablemode());
+
+		modelPhieuNhap.addColumn("Stt");
+		modelPhieuNhap.addColumn("Mã PN");
+		modelPhieuNhap.addColumn("Tên Nhân viên");
+		modelPhieuNhap.addColumn("Thời gian");
+		modelPhieuNhap.addColumn("Tổng giá");
+
+		JTableHeader headerThemSp = tbPhieuNhap.getTableHeader();
+		Font fontHeader = new Font("header", Font.BOLD, 15);
+		Font fontText = new Font("text", ABORT, 23);
+
+		headerThemSp.setFont(fontHeader);
+		headerThemSp.setBackground(Color.pink);
+		headerThemSp.setForeground(new Color(255, 0, 127));
+
+		TableColumnModel tableColumnModel1 = tbPhieuNhap.getColumnModel();
+		tableColumnModel1.getColumn(0).setPreferredWidth(10);
+		tableColumnModel1.getColumn(1).setPreferredWidth(10);
+		tableColumnModel1.getColumn(2).setPreferredWidth(200);
+		tableColumnModel1.getColumn(3).setPreferredWidth(50);
+		tableColumnModel1.getColumn(4).setPreferredWidth(50);
+
+		showInfo(list.getList());
+
+		panel.add(spPhieuNhap);
+
+		menuChucNang chucnang = new menuChucNang();
+
+		viewPanel.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
+		chucnang.bin_btn.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i = tbPhieuNhap.getSelectedRow();
+				System.out.println(i);
+				if (i >= 0) {
+					int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn xóa?", "Xóa phiếu nhập",
+							JOptionPane.YES_NO_CANCEL_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						int id = (int) tbPhieuNhap.getValueAt(i, 1);
+
+						if (list.deleteById(id)) {
+							JOptionPane.showMessageDialog(null, "Bạn đã xóa thành công!!", "Thông báo",
+									JOptionPane.PLAIN_MESSAGE);
+						}
+						showInfo(list.getList());
+					}
 				}
 			}
 
@@ -98,70 +180,47 @@ public class Viewphieunhap extends JFrame {
 
 		});
 
-		tbPhieuNhap.setShowGrid(false);
-		tbPhieuNhap.setRowHeight(30);
-		tbPhieuNhap.setDefaultRenderer(Object.class, new defaulttablemode());
-
-		modelPhieuNhap.addColumn("Stt");
-		modelPhieuNhap.addColumn("Mã PX");
-		modelPhieuNhap.addColumn("Tên Nhân viên");
-		modelPhieuNhap.addColumn("Thời gian");
-		modelPhieuNhap.addColumn("Tổng giá");
-
-		JTableHeader headerThemSp = tbPhieuNhap.getTableHeader();
-		Font fontHeader = new Font("header", Font.BOLD, 15);
-		Font fontText = new Font("text", ABORT, 23);
-
-		headerThemSp.setFont(fontHeader);
-		headerThemSp.setBackground(Color.pink);
-		headerThemSp.setForeground(new Color(255, 0, 127));
-
-		TableColumnModel tableColumnModel1 = tbPhieuNhap.getColumnModel();
-		tableColumnModel1.getColumn(0).setPreferredWidth(10);
-		tableColumnModel1.getColumn(1).setPreferredWidth(10);
-		tableColumnModel1.getColumn(2).setPreferredWidth(200);
-		tableColumnModel1.getColumn(3).setPreferredWidth(50);
-		tableColumnModel1.getColumn(4).setPreferredWidth(50);
-
-		showInfo(list.getList());
-
-		panel.add(spPhieuNhap);
-
-		menuChucNang chucnang = new menuChucNang();
-		chucnang.see_btn.addMouseListener(new MouseListener() {
+		chucnang.textField.addKeyListener(new KeyListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println(e.getClickCount());
+			public void keyTyped(KeyEvent e) {
 			}
 
 			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
+			public void keyPressed(KeyEvent e) {
 			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
-			}
+			public void keyReleased(KeyEvent e) {
+				String check = chucnang.comboBox.getSelectedItem() + "";
+				System.out.println(check);
+				System.out.println(chucnang.textField.getText());
+				if (check.equals("Theo tên")) {
+					showInfo(list.selectByNameStaff(chucnang.textField.getText().toLowerCase()));
+				} else if (check.equals("Theo id")) {
+					try {
 
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
+						showInfo(list.selectById((Integer.parseInt(chucnang.textField.getText()))));
+					} catch (Exception eee) {
+						eee.printStackTrace();
+						// TODO: handle exception
+					}
+				}
 			}
 
 		});
 
-		viewPanel.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
+		chucnang.comboBox.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selected = (String) chucnang.comboBox.getSelectedItem();
+				if (selected.equals("Tất cả")) {
+					showInfo(list.getList());
+				}
+			}
+
+		});
 		viewPanel.add(panel, BorderLayout.CENTER);
 		return viewPanel;
 	}
