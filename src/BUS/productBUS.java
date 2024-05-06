@@ -29,8 +29,12 @@ public class productBUS {
         return listProduct;
     }
 
+    public productDTO getProductByIndex(int idex) {
+        return listProduct.get(idex);
+    }
+
     public String getCategoryProduct(int id) {
-    
+
         return category.getCategory(id);
     }
 
@@ -105,5 +109,39 @@ public class productBUS {
 
         return sizeReturn;
 
+    }
+
+    public ArrayList<productDTO> selectByName(String name) {
+        ArrayList<productDTO> l = new ArrayList<productDTO>();
+        for (productDTO productDTO : listProduct) {
+            if (productDTO.getName().toLowerCase().indexOf(name) != -1) {
+                l.add(productDTO);
+            }
+        }
+        return l;
+    }
+
+    public ArrayList<productDTO> selectByHetHang() {
+        ArrayList<productDTO> l = new ArrayList<productDTO>();
+        for (productDTO productDTO : listProduct) {
+            int sum = 0;
+            for (particularProduct pp : productDTO.getParticularProducts()) {
+                sum += pp.getQuantityRemain();
+            }
+            if (sum < 10) {
+                l.add(productDTO);
+            }
+        }
+        return l;
+    }
+
+    public ArrayList<productDTO> selectById(int id) {
+        ArrayList<productDTO> l = new ArrayList<productDTO>();
+        for (productDTO productDTO : listProduct) {
+            if (productDTO.getIdProduct() == id) {
+                l.add(productDTO);
+            }
+        }
+        return l;
     }
 }

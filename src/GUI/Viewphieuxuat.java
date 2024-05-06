@@ -69,7 +69,7 @@ public class Viewphieuxuat extends JFrame {
 		tbPhieuXuat.setDefaultRenderer(Object.class, new defaulttablemode());
 
 		modelPhieuXuat.addColumn("Stt");
-		modelPhieuXuat.addColumn("Mã PN");
+		modelPhieuXuat.addColumn("Mã PX");
 		modelPhieuXuat.addColumn("Tên Nhân viên");
 		modelPhieuXuat.addColumn("Tên khách hàng");
 		modelPhieuXuat.addColumn("Thời gian");

@@ -13,6 +13,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -74,6 +75,7 @@ public class Viewtrangchu extends JFrame {
 	private JButton btn_thanhtoan;
 	private JButton conform;
 	private validateBUS valid;
+	private JPanel phieunhapView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -93,6 +95,7 @@ public class Viewtrangchu extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1300, 750);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -110,7 +113,6 @@ public class Viewtrangchu extends JFrame {
 						Color.decode("#800080"));
 				g2d.setPaint(gp);
 				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-
 			}
 		};
 
@@ -172,6 +174,33 @@ public class Viewtrangchu extends JFrame {
 		menuItems exit = new menuItems("src/icon/home.png", "Đăng xuất", 11);
 		exit.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(exit);
+		exit.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+				new formLoginView("", "");
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+		});
 
 		container = new JPanel();
 		container.setBackground(new Color(255, 255, 255));
@@ -360,7 +389,7 @@ public class Viewtrangchu extends JFrame {
 		phieuxuatView = new Viewphieuxuat().View();
 		container.add(phieuxuatView, "phiếu xuất");
 
-		JPanel phieunhapView = new JPanel();
+		phieunhapView = new JPanel();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
 
@@ -411,6 +440,12 @@ public class Viewtrangchu extends JFrame {
 			JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng số điện thoại", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 
+	}
+
+	public void loadViewAll() {
+		container.remove(phieunhapView);
+		phieunhapView = new Viewphieunhap().View();
+		container.add(phieunhapView, "phiếu nhập");
 	}
 
 }

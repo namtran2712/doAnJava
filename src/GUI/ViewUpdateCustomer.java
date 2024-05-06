@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Dialog.ModalityType;
+import java.sql.Date;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;

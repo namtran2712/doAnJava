@@ -23,7 +23,7 @@ public class readdata {
     private static float price;
 
     public static void main(String[] args) throws FileNotFoundException {
-        FileReader fr = new FileReader("Database\\vongtay.txt");
+        FileReader fr = new FileReader("Database\\bongtai.txt");
         BufferedReader br = new BufferedReader(fr);
         @SuppressWarnings("unused")
         int i = 0;

@@ -88,7 +88,7 @@ public class Viewkhachhang extends JFrame {
 
 		chucnang = new menuChucNang();
 		viewPanel.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
-		chucnang.see_btn.setEnabled(false);
+		chucnang.see_btn.addMouseListener(new khachHangController(this));
 		chucnang.bin_btn.addMouseListener(new khachHangController(this));
 		chucnang.search_btn.addMouseListener(new khachHangController(this));
 		chucnang.textField.addKeyListener(new khachHangController(this));

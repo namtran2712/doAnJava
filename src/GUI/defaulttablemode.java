@@ -17,17 +17,15 @@ public class defaulttablemode extends DefaultTableCellRenderer {
             setBackground(Color.WHITE);
         }
 
-        else if (isSelected == true ) {
-             setBackground(new Color(255, 202, 212));
-             
-         }
-        else {
+        else if (isSelected == true) {
+            setBackground(new Color(255, 202, 212));
+
+        } else {
             setBackground(new Color(240, 240, 240));
         }
-        setHorizontalAlignment(CENTER);
+        setHorizontalAlignment(LEFT);
         // setValue
         return this;
     }
-     
-    
+
 }

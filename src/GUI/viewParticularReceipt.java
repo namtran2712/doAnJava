@@ -67,7 +67,6 @@ public class viewParticularReceipt extends JFrame {
 
         JTableHeader headerTable = table.getTableHeader();
         Font fontHeader = new Font("header", Font.BOLD, 15);
-        Font fontText = new Font("text", ABORT, 23);
 
         headerTable.setFont(fontHeader);
         headerTable.setBackground(Color.pink);
@@ -97,8 +96,6 @@ public class viewParticularReceipt extends JFrame {
         model.setRowCount(0);
         int i = 0;
 
-        System.err.println(receipt.getParticular().size());
-
         for (particularReceiptDTO particular : receipt.getParticular()) {
             String category = new categoryDAO().selectByID(particular.getProduct().getIdCategory()).getCategoryName();
             String material = new materialDAO().selectByID(particular.getProduct().getIdMaterial()).getMaterial();
@@ -109,7 +106,7 @@ public class viewParticularReceipt extends JFrame {
                     category,
                     material,
                     particular.getSize(),
-                    particular.getPrice(),
+                    item.price(particular.getPrice()),
                     particular.getQuantity()
             });
         }

@@ -10,6 +10,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
+import BUS.productBUS;
 import BUS.validateBUS;
 import DAO.categoryDAO;
 import DAO.materialDAO;
@@ -37,26 +38,28 @@ public class nhapHangController implements MouseListener, ActionListener {
         String src = view.comboSize.getSelectedItem() + "";
         JTable listProduct = this.view.getTbListProducts();
         int i = this.view.getTbListProducts().getSelectedRow();
-        productDTO tmp = new productDao().selectById((int) listProduct.getValueAt(i, 1));
+        productBUS tmp1 = new productBUS();
+        productDTO tmp = tmp1.getProductByIndex((int) listProduct.getValueAt(i, 0) - 1);
         ArrayList<particularProduct> detail = tmp.getParticularProducts();
-
-        for (particularProduct particularProduct : detail)
-            if (src.equals(particularProduct.getSize() + "")) {
-                float price = (float) (particularProduct.getPrice() * 0.95);
-                this.view.getTfPrice().setText(item.price(price));
+        for (int j = 0; j < detail.size(); j++)
+            if (src.equals(detail.get(j).getSize() + "")) {
+                float price = detail.get(j).getPrice();
+                int quantityRemain = detail.get(j).getQuantityRemain();
+                this.view.getTfPrice().setText(item.price((float) (price * (0.95))));
+                this.view.getTfQuantityRemain().setText(quantityRemain + "");
             }
 
         String btn = e.getActionCommand();
         if (btn.equals("Nhập sản phẩm")) {
-            if (view.getTfQuantity().getText().equals("")) {
+            if (view.getTfQuantityReceipt().getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Không được để trống số lượng", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            boolean checkNumber = new validateBUS().checkNumber(view.getTfQuantity().getText());
+            boolean checkNumber = new validateBUS().checkNumber(view.getTfQuantityReceipt().getText());
             if (checkNumber) {
                 try {
-                    int quantity = Integer.parseInt(view.getTfQuantity().getText());
+                    int quantity = Integer.parseInt(view.getTfQuantityReceipt().getText());
                     if (quantity <= 0) {
                         JOptionPane.showMessageDialog(null, "Vui lòng nhập số lớn hơn 0", "Cảnh báo",
                                 JOptionPane.WARNING_MESSAGE);
@@ -84,7 +87,7 @@ public class nhapHangController implements MouseListener, ActionListener {
                                     0,
                                     product,
                                     Integer.parseInt((String) this.view.comboSize.getSelectedItem()),
-                                    Integer.parseInt(this.view.getTfQuantity().getText()),
+                                    Integer.parseInt(this.view.getTfQuantityReceipt().getText()),
                                     item.convertPrice(this.view.getTfPrice().getText()));
                             receiptDTO receipt = new receiptDTO(0,
                                     staff,
@@ -106,12 +109,12 @@ public class nhapHangController implements MouseListener, ActionListener {
                                     0,
                                     product,
                                     Integer.parseInt((String) this.view.comboSize.getSelectedItem()),
-                                    Integer.parseInt(this.view.getTfQuantity().getText()),
+                                    Integer.parseInt(this.view.getTfQuantityReceipt().getText()),
                                     item.convertPrice(this.view.getTfPrice().getText()));
                             if (!this.view.getReceipt().add(
                                     Integer.parseInt(this.view.getTfId().getText()),
                                     Integer.parseInt((String) this.view.comboSize.getSelectedItem()),
-                                    Integer.parseInt(this.view.getTfQuantity().getText()),
+                                    Integer.parseInt(this.view.getTfQuantityReceipt().getText()),
                                     item.convertPrice(this.view.getLbTotal().getText()))) {
                                 this.view.getReceipt().getParticular().add(particular);
                             }
@@ -122,20 +125,26 @@ public class nhapHangController implements MouseListener, ActionListener {
                         float price = 0;
                         for (int k = 0; k < view.getModelNhapSp().getRowCount(); k++) {
                             String strValue = view.getModelNhapSp().getValueAt(k, 6) + "";
+
                             strValue = strValue.substring(0, strValue.length() - 1);
-                            String[] arr = strValue.split(",");
-                            strValue = "";
-                            for (String string : arr) {
-                                strValue += string;
-                            }
+                            strValue = strValue.replaceAll("\\.", "");
                             price += Float.parseFloat(strValue)
                                     * Integer.parseInt(view.getModelNhapSp().getValueAt(k, 7) + "");
                         }
                         this.view.getLbTotal().setText(item.price(price));
                         this.view.getReceipt().setTotalPrice(price);
+                        this.view.getTfId().setText("");
+                        this.view.getTfName().setText("");
+                        this.view.getTfCateogry().setText("");
+                        this.view.getTfMaterial().setText("");
+                        // this.view.comboSize.removeAll();
+                        this.view.comboSize.removeAllItems();
+                        this.view.getTfPrice().setText("");
+                        this.view.getTfQuantityReceipt().setText("");
+                        this.view.getTfQuantityRemain().setText("");
                     }
                 } catch (NumberFormatException e1) {
-                    JOptionPane.showMessageDialog(null, "Vui lòng nhập nguyên", "Cảnh báo",
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập số nguyên", "Cảnh báo",
                             JOptionPane.WARNING_MESSAGE);
                     e1.printStackTrace();
                 }
@@ -147,23 +156,19 @@ public class nhapHangController implements MouseListener, ActionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        JTable listProduct = this.view.getTbListProducts();
         int i = this.view.getTbListProducts().getSelectedRow();
-
-        productDTO tmp = new productDao().selectById((int) listProduct.getValueAt(i, 1));
-
-        categoryDTO category = new categoryDAO().selectByID(tmp.getIdCategory());
-        materialDTO material = new materialDAO().selectByID(tmp.getIdMaterial());
-
-        String[] sizes = new String[tmp.getParticularProducts().size()];
-        for (int j = 0; j < tmp.getParticularProducts().size(); j++) {
-            sizes[j] = tmp.getParticularProducts().get(j).getSize() + "";
+        productBUS tmp = new productBUS();
+        productDTO tmp2 = tmp.getProductByIndex(i);
+        String[] sizes = new String[tmp2.getParticularProducts().size()];
+        for (int j = 0; j < tmp2.getParticularProducts().size(); j++) {
+            sizes[j] = tmp2.getParticularProducts().get(j).getSize() + "";
         }
-        this.view.getTfName().setText(tmp.getName() + "");
-        this.view.getTfId().setText(tmp.getIdProduct() + "");
-        this.view.getTfCateogry().setText(category.getCategoryName());
-        this.view.getTfMaterial().setText(material.getMaterial());
-        this.view.getTfPrice().setText(item.price(tmp.getParticularProducts().get(0).getPrice()));
+        this.view.getTfName().setText(tmp2.getName() + "");
+        this.view.getTfId().setText(tmp2.getIdProduct() + "");
+        this.view.getTfCateogry().setText(tmp.getCategoryProduct(tmp2.getIdCategory()) + "");
+        this.view.getTfMaterial().setText(tmp.getMaterialProduct(tmp2.getIdMaterial()) + "");
+        this.view.getTfQuantityRemain().setText(tmp2.getParticularProducts().get(0).getQuantityRemain() + "");
+        this.view.getTfPrice().setText(item.price((float) ((tmp2.getParticularProducts().get(0).getPrice()) * (0.95))));
         this.view.getComboSize().setModel(new DefaultComboBoxModel<>(sizes));
     }
 
