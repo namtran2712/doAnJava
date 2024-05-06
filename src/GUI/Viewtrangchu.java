@@ -90,6 +90,7 @@ public class Viewtrangchu extends JFrame {
 	private DefaultListModel<String> modellist;
 	int idCurrentShow = -1;
 	private JPanel phieunhapView;
+	private JPanel phieuxuatView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -407,7 +408,7 @@ public class Viewtrangchu extends JFrame {
 		nhaphangView = new Viewnhaphang().nhaphang(username);
 		container.add(nhaphangView, "nhập hàng");
 
-		JPanel phieuxuatView = new JPanel();
+		phieuxuatView = new JPanel();
 		phieuxuatView = new Viewphieuxuat().View();
 		container.add(phieuxuatView, "phiếu xuất");
 
@@ -487,9 +488,12 @@ public class Viewtrangchu extends JFrame {
 	public void loadViewAll() {
 		container.remove(phieunhapView);
 		container.remove(khachhangView);
+		container.remove(phieuxuatView);
+		phieuxuatView = new Viewphieuxuat().View();
 		khachhangView = new Viewkhachhang().View();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
+		container.add(phieuxuatView, "phiếu xuất");
 		container.add(khachhangView, "khách hàng");
 	}
 
