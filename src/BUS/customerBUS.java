@@ -31,9 +31,16 @@ public class customerBUS {
     }
 
     public ArrayList<customerDTO> getInfoByName(String src) {
+        String arr[] = src.toLowerCase().trim().split(" ");
         ArrayList<customerDTO> list = new ArrayList<customerDTO>();
         for (customerDTO cus : listCustomer) {
-            if (cus.getName().toLowerCase().indexOf(src) != -1) {
+            boolean check = true;
+            for (String str : arr) {
+                if (cus.getName().toLowerCase().indexOf(str) == -1) {
+                    check = false;
+                }
+            }
+            if (check) {
                 list.add(cus);
             }
         }

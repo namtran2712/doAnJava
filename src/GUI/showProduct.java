@@ -21,18 +21,17 @@ public class showProduct extends JFrame {
 	private ArrayList<JButton> listSize;
 	productBUS pbus = new productBUS();
 
-	public JDialog showSanPham (productDTO product,int index) {
+	public JDialog showSanPham(productDTO product, int index) {
 		String name = product.getName();
 		String material = pbus.getMaterialProduct(product.getIdMaterial());
 		String img = product.getLinkImg();
-		String price = pbus.getDefaultPrice(product);	
+		String price = pbus.getDefaultPrice(product);
 		String category = pbus.getCategoryProduct(product.getIdCategory());
 		int quantitySold = product.getQuantitySold();
 		int quantityRemain = product.getParticularProducts().get(0).getQuantityRemain();
-		
-		
+
 		JDialog contentPane;
-		
+
 		contentPane = new JDialog(this, "Chi tiết");
 		contentPane.setSize(500, 850);
 		contentPane.setLocationRelativeTo(null);
@@ -102,7 +101,7 @@ public class showProduct extends JFrame {
 		listSize = new ArrayList<>();
 
 		int sizecnt = 0;
-		ArrayList <particularProduct> particularProducts =product.getParticularProducts();
+		ArrayList<particularProduct> particularProducts = product.getParticularProducts();
 		while (sizecnt < particularProducts.size()) {
 			JButton tmp = new JButton(particularProducts.get(sizecnt).getSize() + "");
 			tmp.setCursor(new Cursor(12));
@@ -110,7 +109,6 @@ public class showProduct extends JFrame {
 			tmp.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println(e.getActionCommand());
 					int size = Integer.parseInt(e.getActionCommand());
 					String price = pbus.getPrice(index, size);
 					int quantityRemain = pbus.quantitySize(index, size);
@@ -137,7 +135,6 @@ public class showProduct extends JFrame {
 		for (JButton tmp : listSize) {
 			tmp.setBackground(Color.white);
 			if (tmp.getText().equals(String.valueOf(size))) {
-				System.out.println(tmp.getText());
 				tmp.setBackground(Color.decode("#FFCAD4"));
 				lblNewLabel.setText(price + "₫");
 				lblNewLabel_4.setText("Còn lại: " + quantityRemain);

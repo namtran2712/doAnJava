@@ -91,6 +91,8 @@ public class Viewtrangchu extends JFrame {
 	int idCurrentShow = -1;
 	private JPanel phieunhapView;
 	private JPanel phieuxuatView;
+	private JPanel tonkhoView;
+	private productBUS listProduct;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -197,34 +199,13 @@ public class Viewtrangchu extends JFrame {
 		menuItems exit = new menuItems("src/icon/home.png", "Đăng xuất", 11);
 		exit.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(exit);
-		exit.addMouseListener(new MouseListener() {
-
+		exit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dispose();
 				new formLoginView("", "");
 			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
 		});
-
 		container = new JPanel();
 		container.setBackground(new Color(255, 255, 255));
 		container.setBounds(250, 4, 1040, 712);
@@ -262,7 +243,7 @@ public class Viewtrangchu extends JFrame {
 		JPanel item = new JPanel(new GridLayout(0, 3));
 		showitem_Product.setViewportView(item);
 
-		productBUS listProduct = new productBUS();
+		listProduct = new productBUS();
 		int index = 0;
 		while (index < listProduct.getQuantityProducts()) {
 			productDTO product = listProduct.getProduct(index);
@@ -277,9 +258,7 @@ public class Viewtrangchu extends JFrame {
 				public void mousePressed(MouseEvent e) {
 					super.mousePressed(e);
 					modellist.addElement(name + "x2" + price);
-
 				}
-
 			});
 			item.add(itempanel);
 			index++;
@@ -416,7 +395,7 @@ public class Viewtrangchu extends JFrame {
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
 
-		JPanel tonkhoView = new JPanel();
+		tonkhoView = new JPanel();
 		tonkhoView = new Viewtonkho().View();
 		container.add(tonkhoView, "tồn kho");
 
@@ -489,12 +468,15 @@ public class Viewtrangchu extends JFrame {
 		container.remove(phieunhapView);
 		container.remove(khachhangView);
 		container.remove(phieuxuatView);
+		container.remove(tonkhoView);
+		tonkhoView = new Viewtonkho().View();
 		phieuxuatView = new Viewphieuxuat().View();
 		khachhangView = new Viewkhachhang().View();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
 		container.add(phieuxuatView, "phiếu xuất");
 		container.add(khachhangView, "khách hàng");
+		container.add(tonkhoView, "Tồn kho");
 	}
 
 }

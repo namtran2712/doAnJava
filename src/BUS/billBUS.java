@@ -39,8 +39,16 @@ public class billBUS {
 
     public ArrayList<billDTO> getBillByNameStaff(String name) {
         ArrayList<billDTO> list = new ArrayList<billDTO>();
+        String arr[] = name.toLowerCase().trim().split(" ");
         for (billDTO billDTO : listbill) {
-            if (billDTO.getStaff().getName().toLowerCase().indexOf(name.toLowerCase()) != -1) {
+            boolean check = true;
+            for (String string : arr) {
+                if (billDTO.getStaff().getName().toLowerCase().indexOf(string) == -1) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
                 list.add(billDTO);
             }
         }
@@ -49,8 +57,16 @@ public class billBUS {
 
     public ArrayList<billDTO> getBillByNameCustomer(String name) {
         ArrayList<billDTO> list = new ArrayList<billDTO>();
+        String arr[] = name.toLowerCase().trim().split(" ");
         for (billDTO billDTO : listbill) {
-            if (billDTO.getCustomer().getName().toLowerCase().indexOf(name.toLowerCase()) != -1) {
+            boolean check = true;
+            for (String string : arr) {
+                if (billDTO.getCustomer().getName().toLowerCase().indexOf(string) == -1) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
                 list.add(billDTO);
             }
         }

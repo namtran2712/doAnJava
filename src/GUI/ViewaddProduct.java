@@ -191,7 +191,6 @@ public class ViewaddProduct extends JFrame {
 						listSize.clear();
 
 						int quantityComponents = panelSize.getComponentCount();
-						System.out.println(quantityComponents);
 
 						while (panelSize.getComponentCount() != 0) {
 							panelSize.remove(0);
@@ -233,7 +232,6 @@ public class ViewaddProduct extends JFrame {
 							panelSize.add(quantity2);
 						}
 
-						System.out.println(panelSize.getComponentCount());
 					} catch (Exception warning) {
 						JOptionPane.showMessageDialog(view, "Vui lòng điền vào là số!!!", "Lỗi",
 								JOptionPane.ERROR_MESSAGE);

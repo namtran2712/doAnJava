@@ -112,9 +112,17 @@ public class productBUS {
     }
 
     public ArrayList<productDTO> selectByName(String name) {
+        String[] arr = name.toLowerCase().trim().split(" ");
         ArrayList<productDTO> l = new ArrayList<productDTO>();
         for (productDTO productDTO : listProduct) {
-            if (productDTO.getName().toLowerCase().indexOf(name) != -1) {
+            boolean check = true;
+            for (String tmp : arr) {
+                if (productDTO.getName().toLowerCase().indexOf(tmp) == -1) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
                 l.add(productDTO);
             }
         }

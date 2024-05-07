@@ -34,8 +34,16 @@ public class accountBUS {
 
     public ArrayList<accountDTO> getInfoByName(String src) {
         ArrayList<accountDTO> tmp = new ArrayList<accountDTO>();
+        String arr[] = src.toLowerCase().trim().split(" ");
         for (accountDTO acc : listAccount) {
-            if (acc.getUsername().toLowerCase().indexOf(src) != -1) {
+            boolean check = true;
+            for (String string : arr) {
+                if (acc.getUsername().toLowerCase().indexOf(string) == -1) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
                 tmp.add(acc);
             }
         }

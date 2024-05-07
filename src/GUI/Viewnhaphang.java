@@ -21,7 +21,6 @@ import DAO.categoryDAO;
 import DAO.materialDAO;
 import DAO.receiptDao;
 import DTO.accountDTO;
-import DTO.databaseProduct;
 import DTO.particularReceiptDTO;
 import DTO.productDTO;
 import DTO.receiptDTO;
@@ -471,7 +470,6 @@ public class Viewnhaphang extends JFrame {
                                 if (e.getClickCount() == 2) {
                                         int i = tbNhapSp.getSelectedRow();
                                         int id = (int) tbNhapSp.getValueAt(i, 1);
-                                        System.out.println(id);
                                         int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa không",
                                                         "Xóa sản phẩm nhập", JOptionPane.YES_NO_CANCEL_OPTION);
                                         if (result == JOptionPane.YES_OPTION) {
