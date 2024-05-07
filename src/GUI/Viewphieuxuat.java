@@ -1,6 +1,8 @@
 package GUI;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -8,25 +10,32 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import DAO.billDao;
-import DTO.bill;
+import BUS.billBUS;
+import DTO.billDTO;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class Viewphieuxuat extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel viewPanel;
-	ArrayList<bill> listBill;
+	private billBUS listBill;
 	private DefaultTableModel modelPhieuXuat;
 	private JTable tbPhieuXuat;
 
 	public Viewphieuxuat() {
-		listBill = new billDao().selectAll();
+		listBill = new billBUS();
 	}
 
 	public JTable getTbPhieuXuat() {
@@ -40,7 +49,6 @@ public class Viewphieuxuat extends JFrame {
 		viewPanel = new JPanel();
 		viewPanel.setSize(1100, 750);
 		viewPanel.setLayout(new BorderLayout());
-		// viewPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(viewPanel);
 		viewPanel.setPreferredSize(new Dimension(1100, 750));
@@ -63,6 +71,17 @@ public class Viewphieuxuat extends JFrame {
 
 		};
 		tbPhieuXuat.setModel(modelPhieuXuat);
+		tbPhieuXuat.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					int i = tbPhieuXuat.getSelectedRow();
+					int id = (int) tbPhieuXuat.getValueAt(i, 1);
+					billDTO bill = listBill.getBill(id);
+					JDialog viewParticular = new viewParticularBill().view(bill);
+				}
+			}
+		});
 
 		tbPhieuXuat.setShowGrid(false);
 		tbPhieuXuat.setRowHeight(30);
@@ -91,23 +110,72 @@ public class Viewphieuxuat extends JFrame {
 		tableColumnModel1.getColumn(4).setPreferredWidth(50);
 		tableColumnModel1.getColumn(5).setPreferredWidth(50);
 
-		loadData();
+		loadData(listBill.getListBill());
 
 		panel.add(spPhieuXuat);
 
 		menuChucNang chucnang = new menuChucNang();
-
 		viewPanel.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
+
+		chucnang.bin_btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i = tbPhieuXuat.getSelectedRow();
+				if (i >= 0) {
+					int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn xóa?", "Xóa bill",
+							JOptionPane.YES_NO_CANCEL_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						int id = (int) tbPhieuXuat.getValueAt(i, 1);
+						listBill.deleteBill(id);
+						loadData(listBill.getListBill());
+					}
+				}
+			}
+		});
+
+		chucnang.see_btn.setEnabled(false);
+		chucnang.search_btn.setEnabled(false);
+
+		chucnang.comboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selected = chucnang.comboBox.getSelectedItem() + "";
+				if (selected.equals("Tất cả")) {
+					loadData(listBill.getListBill());
+				}
+			}
+		});
+
+		chucnang.textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String selected = chucnang.comboBox.getSelectedItem() + "";
+				if (selected.equals("Theo tên")) {
+
+				} else if (selected.equals("Theo id")) {
+
+				}
+				super.keyReleased(e);
+			}
+		});
+
 		viewPanel.add(panel, BorderLayout.CENTER);
 		return viewPanel;
 	}
 
-	public void loadData() {
-		for (int i = 0; i < listBill.size(); i++) {
-			String price = item.price(listBill.get(i).getTotal());
+	public void loadData(ArrayList<billDTO> listBill) {
+		modelPhieuXuat.setRowCount(0);
+		int i = 0;
+		for (billDTO billDTO : listBill) {
+
+			String price = item.price(billDTO.getTotal());
 			modelPhieuXuat.insertRow(i,
-					new Object[] { i + 1, listBill.get(i).getIdBill(), listBill.get(i).getStaff().getName(),
-							listBill.get(i).getCustomer().getName(), listBill.get(i).getDateBill(), price });
+					new Object[] { i + 1,
+							billDTO.getIdBill(),
+							billDTO.getStaff().getName(),
+							billDTO.getCustomer().getName(),
+							billDTO.getDateBill(),
+							price });
 		}
 	}
 

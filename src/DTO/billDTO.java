@@ -1,25 +1,29 @@
 package DTO;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
-public class bill {
+public class billDTO {
 	private int idBill;
 	private staffDTO Staff;
 	private customerDTO Customer;
 	private float total;
 	private Date dateBill;
-	private particularBill detail;
+	private ArrayList<particularBill> detail;
 
-	public bill(int idBill, staffDTO staff, customerDTO customer, float total, Date dateBill, particularBill detail) {
+	public billDTO(int idBill, staffDTO staff, customerDTO customer, float total, Date dateBill,
+			particularBill particular) {
 		this.idBill = idBill;
 		Staff = staff;
 		Customer = customer;
 		this.total = total;
 		this.dateBill = dateBill;
-		this.detail = detail;
+		this.detail = new ArrayList<particularBill>();
+		detail.add(particular);
 	}
 
-	public bill() {
+	public billDTO() {
+		detail = new ArrayList<particularBill>();
 	}
 
 	public int getIdBill() {
@@ -62,11 +66,11 @@ public class bill {
 		this.dateBill = dateBill;
 	}
 
-	public particularBill getDetail() {
+	public ArrayList<particularBill> getDetail() {
 		return detail;
 	}
 
-	public void setDetail(particularBill detail) {
+	public void setDetail(ArrayList<particularBill> detail) {
 		this.detail = detail;
 	}
 
