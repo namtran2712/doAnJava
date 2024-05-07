@@ -27,14 +27,24 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
+import BUS.accountBUS;
 import BUS.productBUS;
 import BUS.validateBUS;
+import DTO.accountDTO;
+import DTO.billDTO;
 import DTO.categoryDTO;
 import DTO.customerDTO;
 import DTO.productDTO;
 import DTO.materialDTO;
+import DTO.particularBill;
+import DTO.particularProduct;
 import controller.menuItem_mouseController;
+import DAO.accountDao;
+import DAO.billDao;
 import DAO.categoryDAO;
 import DAO.customerDao;
 import DAO.materialDAO;
@@ -45,6 +55,7 @@ import java.awt.Image;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -74,7 +85,7 @@ public class Viewtrangchu extends JFrame {
 	private JTextField textField;
 	private JTextField searchbarKh;
 	private JTextField textField_1;
-	private JPanel container;
+	public JPanel container;
 	CardLayout card;
 	private JButton btn_thanhtoan;
 	private JButton conform;
@@ -83,15 +94,22 @@ public class Viewtrangchu extends JFrame {
 	private JLabel showcustomer_name;
 	private JLabel showcustomer_id;
 	private JLabel showcustomer_bod;
-	private JPanel khachhangView;
+	public JPanel khachhangView;
 	private JPanel customer_selected;
 	private Viewkhachhang kh;
-	private JTable tableDataproduct;
-	private DefaultListModel<String> modellist;
 	int idCurrentShow = -1;
-	private JPanel phieunhapView;
-	private JPanel phieuxuatView;
-	private JPanel tonkhoView;
+	private DefaultTableModel modelDataproduct;
+	private JTable listproductsJTable;
+	private float sum = 0;
+	private accountDao accountDAO = new accountDao();
+	private accountDTO account;
+	private JLabel pr;
+	private billDao billdao;
+	private customerDTO cus;
+	private ArrayList<particularBill> listbuy;
+	public JPanel phieunhapView;
+	public JPanel phieuxuatView;
+	public JPanel tonkhoView;
 	private productBUS listProduct;
 
 	public static void main(String[] args) {
@@ -117,7 +135,8 @@ public class Viewtrangchu extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
+		account = accountDAO.selectByUsername(username);
+		listbuy = new ArrayList<>();
 		menuTrangchu = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics grphcs) {
@@ -136,10 +155,13 @@ public class Viewtrangchu extends JFrame {
 		menuTrangchu.setBounds(0, 0, 250, 713);
 		menuTrangchu.setPreferredSize(new Dimension(250, 600));
 		contentPane.add(menuTrangchu);
-		menuTrangchu.setLayout(new GridLayout(11, 2, 9, 10));
-
+		int row = 11;
+		if (account.getVaiTro().getIdAuthorize() == 2)
+			row = 12;
+		menuTrangchu.setLayout(new GridLayout(row, 2, 9, 8));
+		int menuItemsIndex = 1;
 		JPanel home_selected = new JPanel();
-		home_selected = new menuItems("src/icon/home.png", "Trang chủ", 1);
+		home_selected = new menuItems("src/icon/home.png", "Trang chủ", menuItemsIndex++);
 		menuTrangchu.add(home_selected);
 		home_selected.addMouseListener(mnuctrl);
 		home_selected.addMouseListener(new MouseAdapter() {
@@ -147,51 +169,60 @@ public class Viewtrangchu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
+
 			}
 
 		});
 
 		customer_selected = new JPanel();
-		customer_selected = new menuItems("src/icon/home.png", "Khách hàng", 2);
+		customer_selected = new menuItems("src/icon/home.png", "Khách hàng", menuItemsIndex++);
 		menuTrangchu.add(customer_selected, "khách hàng");
 		customer_selected.addMouseListener(mnuctrl);
 
 		JPanel product_selected = new JPanel();
-		product_selected = new menuItems("src/icon/home.png", "Sản phẩm", 3);
+		product_selected = new menuItems("src/icon/home.png", "Sản phẩm", menuItemsIndex++);
 		menuTrangchu.add(product_selected, "sản phẩm");
 		product_selected.addMouseListener(mnuctrl);
 
-		menuItems employee_selected = new menuItems("src/icon/home.png", "Nhân viên", 4);
+		menuItems employee_selected = new menuItems("src/icon/home.png", "Nhân viên", menuItemsIndex++);
 		employee_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(employee_selected, "nhân viên");
 		employee_selected.addMouseListener(mnuctrl);
 
-		menuItems nhaphang_selected = new menuItems("src/icon/home.png", "Nhập hàng", 5);
+		menuItems nhaphang_selected = new menuItems("src/icon/home.png", "Nhập hàng", menuItemsIndex++);
 		nhaphang_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(nhaphang_selected, "nhập hàng");
 		nhaphang_selected.addMouseListener(mnuctrl);
 
-		menuItems bill_selected = new menuItems("src/icon/home.png", "Phiếu xuất", 6);
+		menuItems bill_selected = new menuItems("src/icon/home.png", "Phiếu xuất", menuItemsIndex++);
 		bill_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(bill_selected, "phiếu xuất");
 		bill_selected.addMouseListener(mnuctrl);
 
-		menuItems nhaphangBill_selected = new menuItems("src/icon/home.png", "Phiếu nhập", 7);
+		menuItems nhaphangBill_selected = new menuItems("src/icon/home.png", "Phiếu nhập", menuItemsIndex++);
 		nhaphangBill_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(nhaphangBill_selected, "phiếu nhập");
 		nhaphangBill_selected.addMouseListener(mnuctrl);
 
-		menuItems tonkho_selected = new menuItems("src/icon/home.png", "Tồn kho", 8);
+		menuItems tonkho_selected = new menuItems("src/icon/home.png", "Tồn kho", menuItemsIndex++);
 		tonkho_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(tonkho_selected, "tồn kho");
 		tonkho_selected.addMouseListener(mnuctrl);
 
-		menuItems thongke_selected = new menuItems("src/icon/home.png", "Thống kê", 9);
+		menuItems thongke_selected = new menuItems("src/icon/home.png", "Thống kê", menuItemsIndex++);
 		thongke_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(thongke_selected, "thống kê");
 		thongke_selected.addMouseListener(mnuctrl);
+		// moi
+		if (account.getVaiTro().getIdAuthorize() == 2) {
+			menuItems quanlitaikhoan_selected = new menuItems("src/icon/home.png", "Quản lí tài khoản",
+					menuItemsIndex++);
+			quanlitaikhoan_selected.setForeground(new Color(255, 255, 255));
+			menuTrangchu.add(quanlitaikhoan_selected, "quản lí tài khoản");
+			quanlitaikhoan_selected.addMouseListener(mnuctrl);
+		}
 
-		menuItems taikhoan_selected = new menuItems("src/icon/home.png", "Tài khoản", 10);
+		menuItems taikhoan_selected = new menuItems("src/icon/home.png", "Tài khoản", menuItemsIndex++);
 		taikhoan_selected.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(taikhoan_selected, "tài khoản");
 		taikhoan_selected.addMouseListener(mnuctrl);
@@ -237,12 +268,10 @@ public class Viewtrangchu extends JFrame {
 
 		JScrollPane showitem_Product = new JScrollPane();
 		showitem_Product.getVerticalScrollBar().setUnitIncrement(15);
-		;
 		showsanpham.add(showitem_Product);
 
 		JPanel item = new JPanel(new GridLayout(0, 3));
 		showitem_Product.setViewportView(item);
-
 		listProduct = new productBUS();
 		int index = 0;
 		while (index < listProduct.getQuantityProducts()) {
@@ -254,10 +283,36 @@ public class Viewtrangchu extends JFrame {
 			JPanel itempanel = new item().createItem(name, price, category, img);
 			int id = index;
 			itempanel.addMouseListener(new MouseAdapter() {
+
 				@Override
 				public void mousePressed(MouseEvent e) {
 					super.mousePressed(e);
-					modellist.addElement(name + "x2" + price);
+					Float prices = unformatPrice(price);
+					int quantitybuy = 0;
+					int size = product.getParticularProducts().get(0).getSize();
+					try {
+						quantitybuy = Integer.valueOf(JOptionPane.showInputDialog(null, "nhập số lượng"));
+
+					} catch (Exception NumberFormatException) {
+						JOptionPane.showMessageDialog(null, "vui lòng nhập đúng số lượng", "error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+
+					int i = modelDataproduct.getRowCount();
+					if (quantitybuy != 0 && quantitybuy <= product.getParticularProducts().get(0).getQuantityRemain()) {
+						particularBill tmp = new particularBill(product, size, quantitybuy, prices);
+						listbuy.add(tmp);
+						modelDataproduct.insertRow(i, new Object[] {
+								++i, name, quantitybuy
+						});
+						sum += prices * quantitybuy;
+						new item();
+						pr.setText(GUI.item.price(sum));
+
+					} else {
+						JOptionPane.showMessageDialog(null, "vui lòng nhập đúng số lượng", "error",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 			item.add(itempanel);
@@ -344,15 +399,51 @@ public class Viewtrangchu extends JFrame {
 
 		JPanel thongtinsanpham = new JPanel();
 		showthongtin.add(thongtinsanpham);
-		thongtinsanpham.setLayout(new GridLayout(0, 1, 0, 0));
+		thongtinsanpham.setLayout(new BorderLayout());
 
+		JPanel del = new JPanel(new GridLayout());
+		thongtinsanpham.add(del, BorderLayout.NORTH);
+
+		JLabel btnDel = new JLabel("Delete");
+		btnDel.setFont(new Font("arial", Font.ITALIC, 16));
+		btnDel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 20));
+		btnDel.setHorizontalAlignment(SwingConstants.RIGHT);
+		del.add(btnDel);
+
+		btnDel.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				modelDataproduct.removeRow(listproductsJTable.getSelectedRow());
+				super.mousePressed(e);
+			}
+
+		});
 		JScrollPane scrollPane = new JScrollPane();
-		thongtinsanpham.add(scrollPane);
+		thongtinsanpham.add(scrollPane, BorderLayout.CENTER);
 
-		// them moi by nam
-		modellist = new DefaultListModel<>();
-		JList listproduct = new JList<String>(modellist);
-		scrollPane.setViewportView(listproduct);
+		modelDataproduct = new DefaultTableModel();
+
+		modelDataproduct.addColumn("STT");
+		modelDataproduct.addColumn("Product");
+		modelDataproduct.addColumn("Quantity");
+
+		listproductsJTable = new JTable(modelDataproduct);
+		System.out.println(listproductsJTable);
+		scrollPane.setViewportView(listproductsJTable);
+
+		TableColumnModel tableColumnModel = listproductsJTable.getColumnModel();
+		tableColumnModel.getColumn(0).setPreferredWidth(50);
+		tableColumnModel.getColumn(1).setPreferredWidth(200);
+		tableColumnModel.getColumn(2).setPreferredWidth(50);
+
+		JPanel totalPrice = new JPanel(new FlowLayout());
+		thongtinsanpham.add(totalPrice, BorderLayout.SOUTH);
+
+		pr = new JLabel();
+		pr.setForeground(Color.red);
+		pr.setFont(new Font("arial", Font.BOLD, 18));
+		totalPrice.add(pr);
 
 		JPanel thanhtoan = new JPanel();
 		thanhtoan.setPreferredSize(new Dimension(10, 50));
@@ -361,11 +452,17 @@ public class Viewtrangchu extends JFrame {
 
 		btn_thanhtoan = new JButton("Thanh toán");
 		btn_thanhtoan.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		thanhtoan.add(btn_thanhtoan);
 		btn_thanhtoan.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// System.out.println(searchbarKh.getText());
+				billdao = new billDao();
+				billDTO billdto = new billDTO(0, account.getNhanVien(), cus, sum, null, listbuy.get(0));
+				for (int i = 1; i < listbuy.size(); i++) {
+					billdto.getDetail().add(listbuy.get(i));
+				}
+				billdao.insert(billdto);
 			}
 
 		});
@@ -407,6 +504,10 @@ public class Viewtrangchu extends JFrame {
 		taikhoanView = new Viewtaikhoan().view();
 		container.add(taikhoanView, "tài khoản");
 
+		JPanel quanlitaikhoanView = new JPanel();
+		quanlitaikhoanView = new Viewtaikhoan().view();
+		container.add(quanlitaikhoanView, "quản lí tài khoản");
+
 		setVisible(true);
 	}
 
@@ -421,7 +522,7 @@ public class Viewtrangchu extends JFrame {
 		valid = new validateBUS();
 		if (!valid.checkEmpty(searchbarKh) && valid.checkPhone(phoneNum)) {
 			customerDao cusD = new customerDao();
-			customerDTO cus = cusD.getCustomerByPhone(phoneNum);
+			cus = cusD.getCustomerByPhone(phoneNum);
 			if (cus == null) {
 				int check = JOptionPane.showConfirmDialog(this, "Khách hàng không tồn tại có muốn tạo mới khách hàng?");
 				if (check == JOptionPane.YES_OPTION) {
@@ -445,7 +546,6 @@ public class Viewtrangchu extends JFrame {
 				}
 			} else {
 				conform.setEnabled(false);
-				// moi
 				showInfoCus(cus);
 
 			}
@@ -464,19 +564,10 @@ public class Viewtrangchu extends JFrame {
 
 	}
 
-	public void loadViewAll() {
-		// container.remove(phieunhapView);
-		// container.remove(khachhangView);
-		// container.remove(phieuxuatView);
-		// container.remove(tonkhoView);
-		// tonkhoView = new Viewtonkho().View();
-		// phieuxuatView = new Viewphieuxuat().View();
-		// khachhangView = new Viewkhachhang().View();
-		// phieunhapView = new Viewphieunhap().View();
-		// container.add(phieunhapView, "phiếu nhập");
-		// container.add(phieuxuatView, "phiếu xuất");
-		// container.add(khachhangView, "khách hàng");
-		// container.add(tonkhoView, "Tồn kho");
+	public float unformatPrice(String price) {
+		price = price.replace(",", "");
+		System.out.println(price);
+		float priceUnformat = Float.parseFloat(price);
+		return priceUnformat;
 	}
-
 }

@@ -119,7 +119,7 @@ public class ViewaddProduct extends JFrame {
 
 		String[] materials = getDataForAddProduct.getMaterial();
 
-		comboMaterial = new JComboBox<String>();
+		comboMaterial = new JComboBox<String>(materials);
 		comboMaterial.setSelectedItem(materials);
 		panelInfo1.add(comboMaterial);
 		comboMaterial.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
