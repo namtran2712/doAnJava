@@ -1,6 +1,7 @@
 package DTO;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class billDTO {
@@ -8,10 +9,10 @@ public class billDTO {
 	private staffDTO Staff;
 	private customerDTO Customer;
 	private float total;
-	private Date dateBill;
+	private Timestamp dateBill;
 	private ArrayList<particularBill> detail;
 
-	public billDTO(int idBill, staffDTO staff, customerDTO customer, float total, Date dateBill,
+	public billDTO(int idBill, staffDTO staff, customerDTO customer, float total, Timestamp dateBill,
 			particularBill particular) {
 		this.idBill = idBill;
 		Staff = staff;
@@ -58,11 +59,11 @@ public class billDTO {
 		this.total = total;
 	}
 
-	public Date getDateBill() {
+	public Timestamp getDateBill() {
 		return dateBill;
 	}
 
-	public void setDateBill(Date dateBill) {
+	public void setDateBill(Timestamp dateBill) {
 		this.dateBill = dateBill;
 	}
 

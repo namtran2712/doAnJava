@@ -36,4 +36,34 @@ public class billBUS {
         }
         return false;
     }
+
+    public ArrayList<billDTO> getBillByNameStaff(String name) {
+        ArrayList<billDTO> list = new ArrayList<billDTO>();
+        for (billDTO billDTO : listbill) {
+            if (billDTO.getStaff().getName().toLowerCase().indexOf(name.toLowerCase()) != -1) {
+                list.add(billDTO);
+            }
+        }
+        return list;
+    }
+
+    public ArrayList<billDTO> getBillByNameCustomer(String name) {
+        ArrayList<billDTO> list = new ArrayList<billDTO>();
+        for (billDTO billDTO : listbill) {
+            if (billDTO.getCustomer().getName().toLowerCase().indexOf(name.toLowerCase()) != -1) {
+                list.add(billDTO);
+            }
+        }
+        return list;
+    }
+
+    public ArrayList<billDTO> getBillByID(int id) {
+        ArrayList<billDTO> list = new ArrayList<billDTO>();
+        for (billDTO billDTO : listbill) {
+            if (billDTO.getIdBill() == id) {
+                list.add(billDTO);
+            }
+        }
+        return list;
+    }
 }

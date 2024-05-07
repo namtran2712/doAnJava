@@ -154,7 +154,7 @@ public class billDao implements daoInterface<billDTO> {
                             st,
                             ct,
                             rs.getFloat("BILLS.TOTAL_BILL"),
-                            rs.getDate("BILLS.DATE_BILL"),
+                            rs.getTimestamp("BILLS.DATE_BILL"),
                             tmp1);
 
                     currentID = rs.getInt("BILLS.ID_BILL");

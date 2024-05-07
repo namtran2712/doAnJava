@@ -136,6 +136,12 @@ public class Viewphieuxuat extends JFrame {
 		chucnang.see_btn.setEnabled(false);
 		chucnang.search_btn.setEnabled(false);
 
+		chucnang.comboBox.removeAllItems();
+		chucnang.comboBox.addItem("Tất cả");
+		chucnang.comboBox.addItem("Theo tên nhân viên");
+		chucnang.comboBox.addItem("Theo tên khách hàng");
+		chucnang.comboBox.addItem("Theo id");
+
 		chucnang.comboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -150,10 +156,12 @@ public class Viewphieuxuat extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String selected = chucnang.comboBox.getSelectedItem() + "";
-				if (selected.equals("Theo tên")) {
-
+				if (selected.equals("Theo tên nhân viên")) {
+					loadData(listBill.getBillByNameStaff(chucnang.textField.getText()));
+				} else if (selected.equals("Theo tên khách hàng")) {
+					loadData(listBill.getBillByNameCustomer(chucnang.textField.getText()));
 				} else if (selected.equals("Theo id")) {
-
+					loadData(listBill.getBillByID(Integer.parseInt(chucnang.textField.getText())));
 				}
 				super.keyReleased(e);
 			}

@@ -98,7 +98,6 @@ public class Viewtrangchu extends JFrame {
 	private JPanel customer_selected;
 	private Viewkhachhang kh;
 	int idCurrentShow = -1;
-	private Component phieunhapView;
 	private DefaultTableModel modelDataproduct;
 	private JTable listproductsJTable;
 	private float sum = 0;
@@ -109,6 +108,9 @@ public class Viewtrangchu extends JFrame {
 	private billDao billdao;
 	private customerDTO cus;
 	private ArrayList <particularBill> listbuy ;
+	private JPanel phieunhapView;
+	private JPanel phieuxuatView;
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -504,7 +506,7 @@ public class Viewtrangchu extends JFrame {
 		nhaphangView = new Viewnhaphang().nhaphang(username);
 		container.add(nhaphangView, "nhập hàng");
 
-		JPanel phieuxuatView = new JPanel();
+		phieuxuatView = new JPanel();
 		phieuxuatView = new Viewphieuxuat().View();
 		container.add(phieuxuatView, "phiếu xuất");
 
@@ -587,9 +589,12 @@ public class Viewtrangchu extends JFrame {
 	public void loadViewAll() {
 		container.remove(phieunhapView);
 		container.remove(khachhangView);
+		container.remove(phieuxuatView);
+		phieuxuatView = new Viewphieuxuat().View();
 		khachhangView = new Viewkhachhang().View();
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
+		container.add(phieuxuatView, "phiếu xuất");
 		container.add(khachhangView, "khách hàng");
 	}
 
