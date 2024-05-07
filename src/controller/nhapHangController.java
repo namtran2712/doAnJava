@@ -126,10 +126,10 @@ public class nhapHangController implements MouseListener, ActionListener {
                         for (int k = 0; k < view.getModelNhapSp().getRowCount(); k++) {
                             String strValue = view.getModelNhapSp().getValueAt(k, 6) + "";
 
-                            strValue = strValue.substring(0, strValue.length() - 1);
-                            strValue = strValue.replaceAll("\\.", "");
-                            price += Float.parseFloat(strValue)
-                                    * Integer.parseInt(view.getModelNhapSp().getValueAt(k, 7) + "");
+                            System.out.println(strValue);
+                            price += item.convertPrice(strValue)
+                                    * Integer.parseInt(this.view.getTfQuantityReceipt().getText());
+                            System.out.println(price);
                         }
                         this.view.getLbTotal().setText(item.price(price));
                         this.view.getReceipt().setTotalPrice(price);
@@ -180,7 +180,6 @@ public class nhapHangController implements MouseListener, ActionListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 

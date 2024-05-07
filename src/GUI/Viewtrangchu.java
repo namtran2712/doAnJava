@@ -465,18 +465,18 @@ public class Viewtrangchu extends JFrame {
 	}
 
 	public void loadViewAll() {
-		container.remove(phieunhapView);
-		container.remove(khachhangView);
-		container.remove(phieuxuatView);
-		container.remove(tonkhoView);
-		tonkhoView = new Viewtonkho().View();
-		phieuxuatView = new Viewphieuxuat().View();
-		khachhangView = new Viewkhachhang().View();
-		phieunhapView = new Viewphieunhap().View();
-		container.add(phieunhapView, "phiếu nhập");
-		container.add(phieuxuatView, "phiếu xuất");
-		container.add(khachhangView, "khách hàng");
-		container.add(tonkhoView, "Tồn kho");
+		// container.remove(phieunhapView);
+		// container.remove(khachhangView);
+		// container.remove(phieuxuatView);
+		// container.remove(tonkhoView);
+		// tonkhoView = new Viewtonkho().View();
+		// phieuxuatView = new Viewphieuxuat().View();
+		// khachhangView = new Viewkhachhang().View();
+		// phieunhapView = new Viewphieunhap().View();
+		// container.add(phieunhapView, "phiếu nhập");
+		// container.add(phieuxuatView, "phiếu xuất");
+		// container.add(khachhangView, "khách hàng");
+		// container.add(tonkhoView, "Tồn kho");
 	}
 
 }

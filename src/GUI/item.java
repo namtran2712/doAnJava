@@ -43,7 +43,7 @@ public class item extends JFrame {
 
 	public static float convertPrice(String s) {
 		float price = Float.parseFloat(
-				s.substring(0, s.length() - 1).replace(".", ""));
+				s.substring(0, s.length() - 1).replace(",", ""));
 		return price;
 	};
 
@@ -123,5 +123,4 @@ public class item extends JFrame {
 
 		return container;
 	}
-
 }
