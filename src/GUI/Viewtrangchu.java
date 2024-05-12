@@ -489,9 +489,9 @@ public class Viewtrangchu extends JFrame {
 
 		});
 		thanhtoan.add(btn_thanhtoan);
-
+		kh = new Viewkhachhang();
 		khachhangView = new JPanel();
-		khachhangView = new Viewkhachhang().View();
+		khachhangView =kh.View();
 		container.add(khachhangView, "khách hàng");
 
 		JPanel sanphamView = new JPanel();
@@ -587,15 +587,15 @@ public class Viewtrangchu extends JFrame {
 	}
 
 	public void loadViewAll() {
-		container.remove(phieunhapView);
-		container.remove(khachhangView);
-		container.remove(phieuxuatView);
-		phieuxuatView = new Viewphieuxuat().View();
-		khachhangView = new Viewkhachhang().View();
-		phieunhapView = new Viewphieunhap().View();
-		container.add(phieunhapView, "phiếu nhập");
-		container.add(phieuxuatView, "phiếu xuất");
-		container.add(khachhangView, "khách hàng");
+		// container.remove(phieunhapView);
+		// container.remove(khachhangView);
+		// container.remove(phieuxuatView);
+		// phieuxuatView = new Viewphieuxuat().View();
+		// khachhangView = new Viewkhachhang().View();
+		// phieunhapView = new Viewphieunhap().View();
+		// container.add(phieunhapView, "phiếu nhập");
+		// container.add(phieuxuatView, "phiếu xuất");
+		// container.add(khachhangView, "khách hàng");
 	}
 
 	public float unformatPrice(String price) {
@@ -604,4 +604,6 @@ public class Viewtrangchu extends JFrame {
 		float priceUnformat = Float.parseFloat(price);
 		return priceUnformat;
 	}
+
+	// public voi
 }
