@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import GUI.Viewkhachhang;
 import GUI.Viewphieunhap;
 import GUI.Viewphieuxuat;
+import GUI.Viewthongke;
 import GUI.Viewtonkho;
 import GUI.Viewtrangchu;
 import GUI.menuItems;
@@ -47,6 +48,10 @@ public class menuItem_mouseController extends MouseAdapter {
             view.container.remove(view.tonkhoView);
             view.tonkhoView = new Viewtonkho().View();
             view.container.add(view.tonkhoView, "tồn kho");
+        } else if (label.getText().equals("Thống kê")) {
+            view.container.remove(view.thongkeView);
+            view.thongkeView = new Viewthongke().View();
+            view.container.add(view.thongkeView, "thống kê");
         }
 
         view.changePage(label.getText());

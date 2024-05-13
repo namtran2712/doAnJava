@@ -192,4 +192,24 @@ public class receiptDao implements daoInterface<receiptDTO> {
         return null;
     }
 
+    public float getChiPhiCurrent() {
+        Connection conn = databaseUtil.getConnection();
+
+        try {
+            String sql = "SELECT SUM(TOTAL_PRICE)\r\n" +
+                    "FROM receipts\r\n" +
+                    "WHERE DATE(DATE_RECEIPT) = CURDATE()";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet result = pst.executeQuery();
+            while (result.next()) {
+                float total = result.getFloat("SUM(TOTAL_PRICE)");
+                databaseUtil.closeConnection(conn);
+                return total;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        databaseUtil.closeConnection(conn);
+        return 0;
+    }
 }

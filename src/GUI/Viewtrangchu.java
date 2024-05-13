@@ -114,6 +114,7 @@ public class Viewtrangchu extends JFrame {
 	public JPanel phieuxuatView;
 	public JPanel tonkhoView;
 	private productBUS listProduct;
+	public JPanel thongkeView;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -343,15 +344,15 @@ public class Viewtrangchu extends JFrame {
 					if (result == JOptionPane.OK_OPTION) {
 						String num = inputQuantityProductBuy.getText();
 						System.out.println(num);
-						boolean check = new validateBUS().checkNumber(num) ;
-						
+						boolean check = new validateBUS().checkNumber(num);
+
 						if (check) {
 							int size = (int) model.getSelectedItem();
-		
+
 							int quantitybuy = Integer.valueOf(inputQuantityProductBuy.getText());
-							if (quantitybuy> new productBUS().quantitySize(product, size))
-							{
-								JOptionPane.showMessageDialog(null, this, "Số lượng vượt quá giới hạn cho phép",JOptionPane.ERROR_MESSAGE);
+							if (quantitybuy > new productBUS().quantitySize(product, size)) {
+								JOptionPane.showMessageDialog(null, this, "Số lượng vượt quá giới hạn cho phép",
+										JOptionPane.ERROR_MESSAGE);
 								return;
 							}
 							float price = new productBUS().getPrice(product, size);
@@ -364,7 +365,7 @@ public class Viewtrangchu extends JFrame {
 									quantitybuy,
 									size
 							});
-							particularBill particularBill =new particularBill(product, size, quantitybuy, price);
+							particularBill particularBill = new particularBill(product, size, quantitybuy, price);
 							listbuy.add(particularBill);
 						} else {
 							JOptionPane.showMessageDialog(null, "Lỗi", "error", JOptionPane.ERROR_MESSAGE);
@@ -426,8 +427,8 @@ public class Viewtrangchu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				eventConform();
-			
-			}	
+
+			}
 
 		});
 
@@ -577,7 +578,7 @@ public class Viewtrangchu extends JFrame {
 		tonkhoView = new Viewtonkho().View();
 		container.add(tonkhoView, "tồn kho");
 
-		JPanel thongkeView = new JPanel(new GridLayout());
+		thongkeView = new JPanel(new GridLayout());
 		thongkeView = new Viewthongke().View();
 		container.add(thongkeView, "thống kê");
 

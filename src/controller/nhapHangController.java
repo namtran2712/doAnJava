@@ -129,9 +129,9 @@ public class nhapHangController implements MouseListener, ActionListener {
 
                             System.out.println(strValue);
                             price += item.convertPrice(strValue)
-                                    * Integer.parseInt(this.view.getTfQuantityReceipt().getText());
-                            System.out.println(price);
+                                    * Integer.parseInt(view.getModelNhapSp().getValueAt(k, 7) + "");
                         }
+                        System.out.println(price);
                         this.view.getLbTotal().setText(item.price(price));
                         this.view.getReceipt().setTotalPrice(price);
                         this.view.getTfId().setText("");
