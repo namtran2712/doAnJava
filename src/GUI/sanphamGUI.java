@@ -64,10 +64,13 @@ public class sanphamGUI extends JFrame {
 			int id =index;
 			itempanel.addMouseListener(new MouseAdapter() {
 				@Override
-				public void mousePressed(MouseEvent e) {
+				public void mouseClicked(MouseEvent e) {
 					super.mousePressed(e);
-					showProduct sw = new showProduct();
-					sw.showSanPham(product,id);
+					if (e.getClickCount() ==2)
+					{
+						showProduct sw = new showProduct();
+						sw.showSanPham(product,id);
+					}
 
 				}
 

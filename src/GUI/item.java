@@ -33,6 +33,7 @@ public class item extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel container;
+	private boolean isSelect;
 
 	public static String price(float d) {
 		DecimalFormat df = new DecimalFormat();
@@ -124,4 +125,14 @@ public class item extends JFrame {
 		return container;
 	}
 
+	public void setSelect(boolean isSelect) {
+		this.isSelect = isSelect;
+	}
+
+	public boolean isSelect() {
+		return isSelect;
+	}
+	
+
+	
 }

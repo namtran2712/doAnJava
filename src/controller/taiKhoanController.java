@@ -126,7 +126,6 @@ public class taiKhoanController implements MouseListener, ActionListener, KeyLis
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
-
             }
         }
     }

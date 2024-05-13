@@ -76,12 +76,16 @@ public class validateBUS {
     }
 
     public boolean checkNumber(String number) {
-        char[] arr = number.toCharArray();
-        for (int i = 1; i < arr.length; i++) {
-            if (!Character.isDigit(arr[i])) {
+        if (number == null || number.isEmpty()) {
+            return false;
+        }
+
+        for (char c : number.toCharArray()) {
+            if (!Character.isDigit(c)) {
                 return false;
             }
         }
+
         return true;
     }
 }

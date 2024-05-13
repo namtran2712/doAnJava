@@ -1,9 +1,7 @@
 package GUI;
 
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,8 +20,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -142,7 +138,6 @@ public class Viewphieunhap extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int i = tbPhieuNhap.getSelectedRow();
-				System.out.println(i);
 				if (i >= 0) {
 					int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn xóa?", "Xóa phiếu nhập",
 							JOptionPane.YES_NO_CANCEL_OPTION);
@@ -193,8 +188,6 @@ public class Viewphieunhap extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String check = chucnang.comboBox.getSelectedItem() + "";
-				System.out.println(check);
-				System.out.println(chucnang.textField.getText());
 				if (check.equals("Theo tên")) {
 					showInfo(list.selectByNameStaff(chucnang.textField.getText().toLowerCase()));
 				} else if (check.equals("Theo id")) {

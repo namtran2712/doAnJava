@@ -42,11 +42,18 @@ public class receiptBUS {
     }
 
     public ArrayList<receiptDTO> selectByNameStaff(String name) {
+        String[] arr = name.toLowerCase().trim().split(" ");
         ArrayList<receiptDTO> l = new ArrayList<receiptDTO>();
         for (receiptDTO receiptDTO : list) {
-            if (receiptDTO.getStaff().getName().toLowerCase().indexOf(name) != -1) {
-                l.add(receiptDTO);
+            boolean check = true;
+            for (String str : arr) {
+                if (receiptDTO.getStaff().getName().toLowerCase().indexOf(str) == -1) {
+                    check = false;
+                    break;
+                }
             }
+            if (check)
+                l.add(receiptDTO);
         }
 
         return l;

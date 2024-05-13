@@ -38,8 +38,9 @@ public class nhapHangController implements MouseListener, ActionListener {
         String src = view.comboSize.getSelectedItem() + "";
         JTable listProduct = this.view.getTbListProducts();
         int i = this.view.getTbListProducts().getSelectedRow();
+        int id = (int) this.view.getTbListProducts().getValueAt(i, 1);
         productBUS tmp1 = new productBUS();
-        productDTO tmp = tmp1.getProductByIndex((int) listProduct.getValueAt(i, 0) - 1);
+        productDTO tmp = tmp1.getProductByID(id);
         ArrayList<particularProduct> detail = tmp.getParticularProducts();
         for (int j = 0; j < detail.size(); j++)
             if (src.equals(detail.get(j).getSize() + "")) {
@@ -126,10 +127,10 @@ public class nhapHangController implements MouseListener, ActionListener {
                         for (int k = 0; k < view.getModelNhapSp().getRowCount(); k++) {
                             String strValue = view.getModelNhapSp().getValueAt(k, 6) + "";
 
-                            strValue = strValue.substring(0, strValue.length() - 1);
-                            strValue = strValue.replaceAll("\\.", "");
-                            price += Float.parseFloat(strValue)
-                                    * Integer.parseInt(view.getModelNhapSp().getValueAt(k, 7) + "");
+                            System.out.println(strValue);
+                            price += item.convertPrice(strValue)
+                                    * Integer.parseInt(this.view.getTfQuantityReceipt().getText());
+                            System.out.println(price);
                         }
                         this.view.getLbTotal().setText(item.price(price));
                         this.view.getReceipt().setTotalPrice(price);
@@ -157,8 +158,9 @@ public class nhapHangController implements MouseListener, ActionListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         int i = this.view.getTbListProducts().getSelectedRow();
+        int id = (int) this.view.getTbListProducts().getValueAt(i, 1);
         productBUS tmp = new productBUS();
-        productDTO tmp2 = tmp.getProductByIndex(i);
+        productDTO tmp2 = tmp.getProductByID(id);
         String[] sizes = new String[tmp2.getParticularProducts().size()];
         for (int j = 0; j < tmp2.getParticularProducts().size(); j++) {
             sizes[j] = tmp2.getParticularProducts().get(j).getSize() + "";
@@ -180,7 +182,6 @@ public class nhapHangController implements MouseListener, ActionListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 

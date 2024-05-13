@@ -19,6 +19,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -56,6 +57,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -71,6 +73,7 @@ import java.awt.CardLayout;
 import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -85,7 +88,7 @@ public class Viewtrangchu extends JFrame {
 	private JTextField textField;
 	private JTextField searchbarKh;
 	private JTextField textField_1;
-	private JPanel container;
+	public JPanel container;
 	CardLayout card;
 	private JButton btn_thanhtoan;
 	private JButton conform;
@@ -94,7 +97,7 @@ public class Viewtrangchu extends JFrame {
 	private JLabel showcustomer_name;
 	private JLabel showcustomer_id;
 	private JLabel showcustomer_bod;
-	private JPanel khachhangView;
+	public JPanel khachhangView;
 	private JPanel customer_selected;
 	private Viewkhachhang kh;
 	int idCurrentShow = -1;
@@ -103,13 +106,14 @@ public class Viewtrangchu extends JFrame {
 	private float sum = 0;
 	private accountDao accountDAO = new accountDao();
 	private accountDTO account;
-	private productBUS listProduct;
 	private JLabel pr;
 	private billDao billdao;
 	private customerDTO cus;
-	private ArrayList <particularBill> listbuy ;
-	private JPanel phieunhapView;
-	private JPanel phieuxuatView;
+	private ArrayList<particularBill> listbuy;
+	public JPanel phieunhapView;
+	public JPanel phieuxuatView;
+	public JPanel tonkhoView;
+	private productBUS listProduct;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -135,7 +139,7 @@ public class Viewtrangchu extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		account = accountDAO.selectByUsername(username);
-		listbuy =new ArrayList<>();
+		listbuy = new ArrayList<>();
 		menuTrangchu = new JPanel() {
 			@Override
 			protected void paintComponent(Graphics grphcs) {
@@ -229,34 +233,13 @@ public class Viewtrangchu extends JFrame {
 		menuItems exit = new menuItems("src/icon/home.png", "Đăng xuất", 11);
 		exit.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(exit);
-		exit.addMouseListener(new MouseListener() {
-
+		exit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dispose();
 				new formLoginView("", "");
 			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-			}
-
 		});
-
 		container = new JPanel();
 		container.setBackground(new Color(255, 255, 255));
 		container.setBounds(250, 4, 1040, 712);
@@ -306,32 +289,86 @@ public class Viewtrangchu extends JFrame {
 
 				@Override
 				public void mousePressed(MouseEvent e) {
-					super.mousePressed(e);
-					Float prices = unformatPrice(price);
-					int quantitybuy = 0;
-					int size = product.getParticularProducts().get(0).getSize();
-					try {
-						quantitybuy = Integer.valueOf(JOptionPane.showInputDialog(null, "nhập số lượng"));
+					Font defaultFont = new Font("arial", Font.BOLD, 18);
+					JPanel formInfoProductbuy = new JPanel(new BorderLayout(20, 20));
+					formInfoProductbuy.setSize(500, 400);
+					JPanel header = new JPanel(new FlowLayout(FlowLayout.CENTER));
+					header.setBackground(Color.PINK);
+					header.setPreferredSize(new Dimension(250, 50));
+					formInfoProductbuy.add(header, BorderLayout.NORTH);
 
-					} catch (Exception NumberFormatException) {
-						JOptionPane.showMessageDialog(null, "vui lòng nhập đúng số lượng", "error",
-								JOptionPane.ERROR_MESSAGE);
+					JLabel titleForm = new JLabel("Nhập số lượng");
+					titleForm.setForeground(Color.WHITE);
+					titleForm.setFont(new Font("Arial", Font.BOLD, 25));
+					header.add(titleForm);
+
+					JPanel mainForm = new JPanel(new GridLayout(2, 1, 20, 10));
+					formInfoProductbuy.add(mainForm);
+
+					JPanel mainFormTop = new JPanel(new GridLayout(2, 1, 10, 10));
+					mainForm.add(mainFormTop);
+
+					JLabel title1 = new JLabel("Nhập số lượng");
+					title1.setForeground(Color.lightGray);
+					title1.setFont(defaultFont);
+					mainFormTop.add(title1);
+
+					JTextField inputQuantityProductBuy = new JTextField(20);
+					inputQuantityProductBuy.setFont(defaultFont);
+					mainFormTop.add(inputQuantityProductBuy);
+
+					JPanel mainFormBottom = new JPanel(new GridLayout(2, 1));
+					mainForm.add(mainFormBottom, BorderLayout.CENTER);
+
+					JLabel title2 = new JLabel("Nhập size");
+					title2.setForeground(Color.lightGray);
+					title2.setFont(defaultFont);
+					mainFormBottom.add(title2);
+
+					DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<>();
+					ArrayList<Integer> listsize = new ArrayList<>();
+					for (particularProduct pt : product.getParticularProducts()) {
+						listsize.add(pt.getSize());
+
 					}
+					model.setSelectedItem(listsize.get(0));
+					model.addAll(listsize);
 
-					int i = modelDataproduct.getRowCount();
-					if (quantitybuy != 0 && quantitybuy <= product.getParticularProducts().get(0).getQuantityRemain()) {
-						particularBill tmp =new particularBill(product, size, quantitybuy, prices);
-						listbuy.add(tmp);
-						modelDataproduct.insertRow(i, new Object[] {
-								++i, name, quantitybuy
-						});
-						sum += prices * quantitybuy;
-						new item();
-						pr.setText(GUI.item.price(sum));
+					JComboBox<Integer> jboxproduct = new JComboBox<>(model);
+					jboxproduct.setSize(new Dimension(200, 30));
+					mainFormBottom.add(jboxproduct);
 
-					} else {
-						JOptionPane.showMessageDialog(null, "vui lòng nhập đúng số lượng", "error",
-								JOptionPane.ERROR_MESSAGE);
+					int result = JOptionPane.showConfirmDialog(null, formInfoProductbuy, "Nhập giá trị",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null);
+					if (result == JOptionPane.OK_OPTION) {
+						String num = inputQuantityProductBuy.getText();
+						System.out.println(num);
+						boolean check = new validateBUS().checkNumber(num) ;
+						
+						if (check) {
+							int size = (int) model.getSelectedItem();
+		
+							int quantitybuy = Integer.valueOf(inputQuantityProductBuy.getText());
+							if (quantitybuy> new productBUS().quantitySize(product, size))
+							{
+								JOptionPane.showMessageDialog(null, this, "Số lượng vượt quá giới hạn cho phép",JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							float price = new productBUS().getPrice(product, size);
+							sum += price * quantitybuy;
+							pr.setText(GUI.item.price(sum));
+							int i = modelDataproduct.getRowCount();
+							modelDataproduct.insertRow(i, new Object[] {
+									++i,
+									product.getName(),
+									quantitybuy,
+									size
+							});
+							particularBill particularBill =new particularBill(product, size, quantitybuy, price);
+							listbuy.add(particularBill);
+						} else {
+							JOptionPane.showMessageDialog(null, "Lỗi", "error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				}
 
@@ -389,8 +426,8 @@ public class Viewtrangchu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				eventConform();
-
-			}
+			
+			}	
 
 		});
 
@@ -430,13 +467,30 @@ public class Viewtrangchu extends JFrame {
 		btnDel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 20));
 		btnDel.setHorizontalAlignment(SwingConstants.RIGHT);
 		del.add(btnDel);
-
 		btnDel.addMouseListener(new MouseAdapter() {
+
+			private float pricedelete;
+			private int quantity;
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				modelDataproduct.removeRow(listproductsJTable.getSelectedRow());
-				super.mousePressed(e);
+				if (listproductsJTable.getSelectedRow() == -1) {
+					JOptionPane.showMessageDialog(null, "vui lòng chọn dòng cần xóa");
+				} else {
+					int index = listproductsJTable.getSelectedRow();
+					quantity = (int) modelDataproduct.getValueAt(index, 2);
+					int size = (int) modelDataproduct.getValueAt(index, 3);
+					productDao pdao = new productDao();
+					productDTO product = pdao.selectByName(((String) modelDataproduct.getValueAt(index, 1)));
+					modelDataproduct.removeRow(listproductsJTable.getSelectedRow());
+					productBUS pubs = new productBUS();
+					pricedelete = pubs.getPrice(product, size);
+
+				}
+
+				sum = sum - (pricedelete * quantity);
+
+				pr.setText(GUI.item.price(sum));
 			}
 
 		});
@@ -448,15 +502,17 @@ public class Viewtrangchu extends JFrame {
 		modelDataproduct.addColumn("STT");
 		modelDataproduct.addColumn("Product");
 		modelDataproduct.addColumn("Quantity");
+		modelDataproduct.addColumn("Size");
 
 		listproductsJTable = new JTable(modelDataproduct);
-		System.out.println(listproductsJTable);
+		// System.out.println(listproductsJTable);
 		scrollPane.setViewportView(listproductsJTable);
 
 		TableColumnModel tableColumnModel = listproductsJTable.getColumnModel();
-		tableColumnModel.getColumn(0).setPreferredWidth(50);
-		tableColumnModel.getColumn(1).setPreferredWidth(200);
+		tableColumnModel.getColumn(0).setPreferredWidth(30);
+		tableColumnModel.getColumn(1).setPreferredWidth(70);
 		tableColumnModel.getColumn(2).setPreferredWidth(50);
+		tableColumnModel.getColumn(3).setPreferredWidth(50);
 
 		JPanel totalPrice = new JPanel(new FlowLayout());
 		thongtinsanpham.add(totalPrice, BorderLayout.SOUTH);
@@ -475,13 +531,16 @@ public class Viewtrangchu extends JFrame {
 		btn_thanhtoan.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		thanhtoan.add(btn_thanhtoan);
 		btn_thanhtoan.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				billdao =new billDao();
-				billDTO billdto =new billDTO(0,account.getNhanVien(),cus,sum,null,listbuy.get(0));
-				for (int i=1;i<listbuy.size();i++)
-				{
+				if (cus == null) {
+					JOptionPane.showMessageDialog(null, "error", "Vui lòng nhập khách hàng", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				billdao = new billDao();
+				billDTO billdto = new billDTO(0, account.getNhanVien(), cus, sum, null, listbuy.get(0));
+				for (int i = 1; i < listbuy.size(); i++) {
 					billdto.getDetail().add(listbuy.get(i));
 				}
 				billdao.insert(billdto);
@@ -491,7 +550,7 @@ public class Viewtrangchu extends JFrame {
 		thanhtoan.add(btn_thanhtoan);
 		kh = new Viewkhachhang();
 		khachhangView = new JPanel();
-		khachhangView =kh.View();
+		khachhangView = kh.View();
 		container.add(khachhangView, "khách hàng");
 
 		JPanel sanphamView = new JPanel();
@@ -514,7 +573,7 @@ public class Viewtrangchu extends JFrame {
 		phieunhapView = new Viewphieunhap().View();
 		container.add(phieunhapView, "phiếu nhập");
 
-		JPanel tonkhoView = new JPanel();
+		tonkhoView = new JPanel();
 		tonkhoView = new Viewtonkho().View();
 		container.add(tonkhoView, "tồn kho");
 
@@ -600,10 +659,19 @@ public class Viewtrangchu extends JFrame {
 
 	public float unformatPrice(String price) {
 		price = price.replace(".", "");
-		System.out.println(price);
+		// System.out.println(price);
 		float priceUnformat = Float.parseFloat(price);
 		return priceUnformat;
 	}
 
-	// public voi
+	// public float tongbill() {
+	// for (int i = 0; i < modelDataproduct.getRowCount(); i++) {
+	// Object[] rowData = new Object[2];
+	// sum = (int) modelDataproduct.getValueAt(i,0 ) ;
+
+	// // Bây giờ bạn có thể làm bất kỳ điều gì với dữ liệu trong rowData
+	// // Ví dụ: in ra giá trị của từng dòng
+	// System.out.println("Row " + i + ": " + Arrays.toString(rowData));
+	// }
+	// }
 }

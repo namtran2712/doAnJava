@@ -11,7 +11,7 @@ public class particularProduct {
     int size;
     float price;
 
-    public particularProduct(int size, float price,int quantityRemain) {
+    public particularProduct(int size, float price, int quantityRemain) {
         this.quantityRemain = quantityRemain;
         this.size = size;
         this.price = price;
@@ -41,8 +41,10 @@ public class particularProduct {
         this.price = price;
     }
 
+    
+
     @Override
     public String toString() {
         return "particularProduct [quantityRemain=" + quantityRemain + ", size=" + size + ", price=" + price + "]";
     }
-} 
+}

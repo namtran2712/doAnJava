@@ -71,7 +71,7 @@ public class productDao implements daoInterface<productDTO> {
                     tmp.setQuantitySold(rs.getInt("QUANTITY_SOLD"));
                     tmp.setLinkImg(rs.getString("LINK_IMAGE"));
                     currentId = rs.getInt("ID_PRODUCT");
-                    tmp.setParticularProducts(rs.getInt("SIZE"), rs.getFloat("PRICE"),rs.getInt("QUANTITY_REMAIN"));
+                    tmp.setParticularProducts(rs.getInt("SIZE"), rs.getFloat("PRICE"), rs.getInt("QUANTITY_REMAIN"));
                     result.add(tmp);
                     currentId = tmp.getIdProduct();
                     // System.out.println(tmp.getLinkImg());
@@ -116,6 +116,41 @@ public class productDao implements daoInterface<productDTO> {
         throw new UnsupportedOperationException("Unimplemented method 'selectByCondition'");
     }
 
+    public productDTO selectByName(String name) {
+        Connection conc = databaseUtil.getConnection();
+        try (Statement stmt = conc.createStatement()) {
+            String sql = "Select * from products join particular_products on particular_products.ID_PRODUCT=products.ID_PRODUCT "
+                    +
+                    "WHERE products.product_name ='" + name + "'";
+                    System.out.println(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+            productDTO tmp;
+            tmp = new productDTO();
+            int currentId = -1;
+            while (rs.next()) {
+                if (currentId != rs.getInt("ID_PRODUCT")) {
+                    tmp.setIdProduct(rs.getInt("ID_PRODUCT"));
+                    tmp.setIdCategory(rs.getInt("ID_CATEGORY"));
+                    tmp.setIdMaterial(rs.getInt("ID_MATERIAL"));
+                    tmp.setName(rs.getString("PRODUCT_NAME"));
+                    tmp.setQuantitySold(rs.getInt("QUANTITY_SOLD"));
+                    tmp.setLinkImg(rs.getString("LINK_IMAGE"));
+                    currentId = rs.getInt("ID_PRODUCT");
+                    tmp.setParticularProducts(rs.getInt("SIZE"), rs.getFloat("PRICE"),
+                            rs.getInt("QUANTITY_REMAIN"));
+                } else {
+                    tmp.setParticularProducts(rs.getInt("SIZE"), rs.getFloat("PRICE"),
+                            rs.getInt("QUANTITY_REMAIN"));
+                }
+            }
+            return tmp;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     public productDTO selectById(int id) {
         Connection conc = databaseUtil.getConnection();
         try {
@@ -125,9 +160,9 @@ public class productDao implements daoInterface<productDTO> {
                     "FROM products join particular_products on particular_products.ID_PRODUCT=products.ID_PRODUCT " +
                     "WHERE particular_products.ID_PRODUCT= " + id;
             ResultSet rs = stmt.executeQuery(sql);
-            int currentId = -1;
             productDTO tmp;
             tmp = new productDTO();
+            int currentId = -1;
             while (rs.next()) {
                 if (currentId != rs.getInt("ID_PRODUCT")) {
                     tmp.setIdProduct(rs.getInt("ID_PRODUCT"));

@@ -88,6 +88,24 @@ public class productBUS {
         }
     }
 
+    public float getPrice(productDTO product, int size) {
+        ArrayList<particularProduct> pd = product.getParticularProducts();
+        float price = 0;
+        boolean flag = true;
+        for (particularProduct p : pd) {
+            if (p.getSize() == size) {
+                price = p.getPrice();
+                flag = false;
+            }
+
+        }
+        if (flag)
+            return -1;
+        else {
+            return price;
+        }
+    }
+
     public String getDefaultPrice(productDTO product) {
         float price = product.getParticularProducts().get(0).getPrice();
         DecimalFormat decimalFormat = new DecimalFormat("#,##0");
@@ -95,8 +113,8 @@ public class productBUS {
         return formattedPrice;
     }
 
-    public int quantitySize(int id, int size) {
-        ArrayList<particularProduct> pd = listProduct.get(id).getParticularProducts();
+    public int quantitySize(productDTO product, int size) {
+        ArrayList<particularProduct> pd = product.getParticularProducts();
         int sizeReturn = -1;
 
         for (particularProduct p : pd) {
@@ -112,9 +130,17 @@ public class productBUS {
     }
 
     public ArrayList<productDTO> selectByName(String name) {
+        String[] arr = name.toLowerCase().trim().split(" ");
         ArrayList<productDTO> l = new ArrayList<productDTO>();
         for (productDTO productDTO : listProduct) {
-            if (productDTO.getName().toLowerCase().indexOf(name) != -1) {
+            boolean check = true;
+            for (String tmp : arr) {
+                if (productDTO.getName().toLowerCase().indexOf(tmp) == -1) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
                 l.add(productDTO);
             }
         }

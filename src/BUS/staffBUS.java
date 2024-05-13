@@ -1,10 +1,6 @@
 package BUS;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import DAO.staffDao;
 import DTO.customerDTO;
 import DTO.staffDTO;
@@ -35,11 +31,18 @@ public class staffBUS {
 	}
 
 	public ArrayList<staffDTO> getInfoByName(String src) {
+		String[] arr = src.toLowerCase().trim().split(" ");
 		ArrayList<staffDTO> tmp = new ArrayList<staffDTO>();
 		for (staffDTO s : listStaff) {
-			if (s.getName().toLowerCase().indexOf(src) != -1) {
-				tmp.add(s);
+			boolean check = true;
+			for (String str : arr) {
+				if (s.getName().toLowerCase().indexOf(str) == -1) {
+					check = false;
+					break;
+				}
 			}
+			if (check)
+				tmp.add(s);
 		}
 		return tmp;
 	}
