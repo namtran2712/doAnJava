@@ -20,8 +20,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -133,8 +135,7 @@ public class Viewphieunhap extends JFrame {
 		menuChucNang chucnang = new menuChucNang();
 
 		viewPanel.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
-		chucnang.bin_btn.addMouseListener(new MouseListener() {
-
+		chucnang.bin_btn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int i = tbPhieuNhap.getSelectedRow();
@@ -152,39 +153,9 @@ public class Viewphieunhap extends JFrame {
 					}
 				}
 			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-
-			}
-
 		});
 
-		chucnang.textField.addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-
+		chucnang.textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String check = chucnang.comboBox.getSelectedItem() + "";
@@ -196,11 +167,9 @@ public class Viewphieunhap extends JFrame {
 						showInfo(list.selectById((Integer.parseInt(chucnang.textField.getText()))));
 					} catch (Exception eee) {
 						eee.printStackTrace();
-						// TODO: handle exception
 					}
 				}
 			}
-
 		});
 
 		chucnang.comboBox.addActionListener(new ActionListener() {
@@ -214,6 +183,10 @@ public class Viewphieunhap extends JFrame {
 			}
 
 		});
+
+		chucnang.search_btn.setEnabled(false);
+		chucnang.see_btn.setEnabled(false);
+
 		viewPanel.add(panel, BorderLayout.CENTER);
 		return viewPanel;
 	}

@@ -39,7 +39,6 @@ public class thongKeDao {
             databaseUtil.closeConnection(conn);
             return list;
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         databaseUtil.closeConnection(conn);
