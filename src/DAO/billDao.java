@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.billDTO;
@@ -196,4 +195,25 @@ public class billDao implements daoInterface<billDTO> {
         return null;
     }
 
+    public float getDoanhThuCurrent() {
+        Connection conn = databaseUtil.getConnection();
+
+        try {
+            String sql = "SELECT SUM(TOTAL_BILL)\r\n" +
+                    "FROM bills\r\n" +
+                    "WHERE DATE(DATE_BILL) = CURDATE()";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet result = pst.executeQuery();
+            while (result.next()) {
+                float total = result.getFloat("SUM(TOTAL_BILL)");
+                databaseUtil.closeConnection(conn);
+                return total;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        databaseUtil.closeConnection(conn);
+        return 0;
+    }
 }

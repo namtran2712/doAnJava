@@ -4,12 +4,25 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import BUS.thongKeBus;
+import DAO.billDao;
+import DAO.receiptDao;
+import DTO.thongkeDTO;
+
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Viewthongke extends JFrame {
 
         private static final long serialVersionUID = 1L;
         private JPanel Viewthongke;
+        private thongKeBus thongke;
+        private DefaultTableModel model;
+        private JTable tablethongke;
+
+        public Viewthongke() {
+                thongke = new thongKeBus();
+        }
 
         public JPanel View() {
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,32 +33,40 @@ public class Viewthongke extends JFrame {
                 header.setPreferredSize(new Dimension(1000, 200));
                 Viewthongke.add(header, BorderLayout.NORTH);
 
-                JPanel tk1 = new cardborder(Color.BLACK, Color.white, "src\\icon\\ccc.png", "Doanh số hôm nay",
-                                "1.400.000$",
-                                "increase 125%").View();
+                float doanhThuCurrent = new billDao().getDoanhThuCurrent();
+                JPanel tk1 = new cardborder(Color.BLACK, Color.white, "src\\icon\\ccc.png", "Doanh thu hôm nay",
+                                item.price(doanhThuCurrent),
+                                "").View();
                 header.add(tk1);
 
-                JPanel tk2 = new cardborder(Color.BLACK, Color.white, "src\\icon\\ccc.png", "Doanh số hôm nay",
-                                "1.400.000$",
-                                "increase 125%").View();
+                float chiPhiCurrent = new receiptDao().getChiPhiCurrent();
+                JPanel tk2 = new cardborder(Color.BLACK, Color.white, "src\\icon\\ccc.png", "chi phí hôm nay",
+                                item.price(chiPhiCurrent),
+                                "").View();
                 header.add(tk2);
 
-                JPanel tk3 = new cardborder(Color.BLACK, Color.white, "src\\icon\\ccc.png", "Doanh số hôm nay",
-                                "1.400.000$",
-                                "increase 125%").View();
+                float loiNhuanCurrent = doanhThuCurrent - chiPhiCurrent;
+                JPanel tk3 = new cardborder(Color.BLACK, Color.white, "src\\icon\\ccc.png", "Lợi nhuận hôm nay",
+                                item.price(loiNhuanCurrent),
+                                "").View();
                 header.add(tk3);
 
                 JPanel navThongke = new JPanel(new GridLayout(1, 4));
                 Viewthongke.add(navThongke, BorderLayout.CENTER);
 
-                DefaultTableModel model = new DefaultTableModel();
-                model.addColumn("Ngày");
+                model = new DefaultTableModel() {
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                                return false;
+                        }
+                };
+                model.addColumn("Thời gian");
                 model.addColumn("Chi Phí");
                 model.addColumn("Doanh thu");
                 model.addColumn("Lợi nhuận");
 
                 model.setRowCount(10);
-                JTable tablethongke = new JTable();
+                tablethongke = new JTable();
                 tablethongke.setDefaultRenderer(Object.class, new defaulttablemode());
                 tablethongke.setShowGrid(false);
                 tablethongke.setRowHeight(30);
@@ -59,10 +80,24 @@ public class Viewthongke extends JFrame {
                 theader.setBackground(Color.pink);
                 theader.setForeground(new Color(255, 0, 127));
 
+                loadData(thongke.getList());
+
                 JScrollPane pane = new JScrollPane(tablethongke);
                 Viewthongke.add(pane, BorderLayout.SOUTH);
                 return Viewthongke;
+        }
 
+        public void loadData(ArrayList<thongkeDTO> thongke) {
+                model.setRowCount(0);
+                for (thongkeDTO tk : thongke) {
+                        float loiNhuan = tk.getTotalDoanhThu() - tk.getTotalChiPhi();
+                        model.addRow(new Object[] {
+                                        tk.getTime(),
+                                        item.price(tk.getTotalChiPhi()),
+                                        item.price(tk.getTotalDoanhThu()),
+                                        item.price(loiNhuan)
+                        });
+                }
         }
 
 }
