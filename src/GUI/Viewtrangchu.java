@@ -226,11 +226,6 @@ public class Viewtrangchu extends JFrame {
 			quanlitaikhoan_selected.addMouseListener(mnuctrl);
 		}
 
-		menuItems taikhoan_selected = new menuItems("src/icon/home.png", "Tài khoản", menuItemsIndex++);
-		taikhoan_selected.setForeground(new Color(255, 255, 255));
-		menuTrangchu.add(taikhoan_selected, "tài khoản");
-		taikhoan_selected.addMouseListener(mnuctrl);
-
 		menuItems exit = new menuItems("src/icon/home.png", "Đăng xuất", 11);
 		exit.setForeground(new Color(255, 255, 255));
 		menuTrangchu.add(exit);
@@ -546,9 +541,9 @@ public class Viewtrangchu extends JFrame {
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công", "Thông báo", JOptionPane.PLAIN_MESSAGE);
 				billdao.insert(billdto);
-				// listbuy = new ArrayList<particularBill>();
-				// modelDataproduct.setRowCount(0);
-				// pr.setText("0");
+				listbuy = new ArrayList<particularBill>();
+				modelDataproduct.setRowCount(0);
+				pr.setText("0");
 			}
 
 		});

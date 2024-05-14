@@ -185,7 +185,7 @@ public class Viewphieunhap extends JFrame {
 		});
 
 		chucnang.search_btn.setEnabled(false);
-		chucnang.see_btn.setEnabled(false);
+		chucnang.add_btn.setEnabled(false);
 
 		viewPanel.add(panel, BorderLayout.CENTER);
 		return viewPanel;

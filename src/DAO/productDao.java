@@ -152,7 +152,7 @@ public class productDao implements daoInterface<productDTO> {
 
     }
 
-    public boolean addProduct(productDTO product,ArrayList <Integer> size,ArrayList<Float> price) {
+    public boolean addProduct(productDTO product, ArrayList<Integer> size, ArrayList<Float> price) {
 
         Connection conc = databaseUtil.getConnection();
         try {
@@ -168,19 +168,31 @@ public class productDao implements daoInterface<productDTO> {
                     + ");";
             stmt.executeUpdate(sql);
 
-            for (int i=0;i<size.size();i++)
-            {
-                insertParticularProduct(product.getIdProduct(), size.get(i), price.get(i), 0);
+            for (int i = 0; i < size.size(); i++) {
+                insertParticularProduct(new productDao().getLastId(), size.get(i), price.get(i), 0);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-      
-        
         return true;
     }
-    
+
+    public int getLastId() {
+        Connection conc = databaseUtil.getConnection();
+        String sql ="select Id_product from products order by id_product desc limit 1";
+        try {
+            int id;
+            Statement stmt = conc.createStatement();
+            ResultSet rs =stmt.executeQuery(sql);
+            while (rs.next()) {
+                id = rs.getInt(0);
+                return id;
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
 
     public productDTO selectById(int id) {
         Connection conc = databaseUtil.getConnection();

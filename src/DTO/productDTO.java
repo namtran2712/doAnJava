@@ -94,6 +94,7 @@ public class productDTO {
 		particularProduct ptcd = new particularProduct(size, price, quantityRemain);
 		particularProducts.add(ptcd);
 	}
+	
 
 	@Override
 	public String toString() {

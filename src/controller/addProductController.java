@@ -40,7 +40,7 @@ public class addProductController implements ActionListener {
             view.setVisible(false);
         } else if (src.equals("Thêm sản phẩm")) {
             boolean check = true;
-            while (check) {
+            
                 if (checkEmpty(this.viewAdd.fieldProductName.getText()) ||
                         checkEmpty(this.viewAdd.fieldQuantitySize.getText())) {
                     check = false;
@@ -70,8 +70,7 @@ public class addProductController implements ActionListener {
                         }
                     }
                 }
-            }
-
+            
             if (check == false) {
                 JOptionPane.showMessageDialog(this.viewAdd, "Không được để trống ô nào", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
@@ -84,7 +83,7 @@ public class addProductController implements ActionListener {
                 int idmate = this.viewAdd.getIdMaterial();
                
                 img = img.substring(3, img.length() - 1);
-                productDTO product = new productDTO(0, idcate, idmate, this.viewAdd.getName(), 0, img, null);
+                productDTO product = new productDTO(0, idcate, idmate, this.viewAdd.fieldProductName.getText(), 0, img, null);
               
                 ArrayList<Integer> listSize = new ArrayList<>();
                 ArrayList <Float > listPrice =new ArrayList<>();
@@ -96,7 +95,7 @@ public class addProductController implements ActionListener {
                 }
                 productDao pdao = new productDao();
                 pdao.addProduct(product, listSize,listPrice);
-                
+                view.dispose();
             }
 
         } else if (src.equals("Hình ảnh minh họa")) {
