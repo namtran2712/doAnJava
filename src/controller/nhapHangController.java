@@ -127,7 +127,6 @@ public class nhapHangController implements MouseListener, ActionListener {
                         for (int k = 0; k < view.getModelNhapSp().getRowCount(); k++) {
                             String strValue = view.getModelNhapSp().getValueAt(k, 6) + "";
 
-                            System.out.println(strValue);
                             price += item.convertPrice(strValue)
                                     * Integer.parseInt(view.getModelNhapSp().getValueAt(k, 7) + "");
                         }

@@ -544,7 +544,11 @@ public class Viewtrangchu extends JFrame {
 				for (int i = 1; i < listbuy.size(); i++) {
 					billdto.getDetail().add(listbuy.get(i));
 				}
+				JOptionPane.showMessageDialog(null, "Thanh toán thành công", "Thông báo", JOptionPane.PLAIN_MESSAGE);
 				billdao.insert(billdto);
+				// listbuy = new ArrayList<particularBill>();
+				// modelDataproduct.setRowCount(0);
+				// pr.setText("0");
 			}
 
 		});
@@ -646,33 +650,10 @@ public class Viewtrangchu extends JFrame {
 
 	}
 
-	public void loadViewAll() {
-		// container.remove(phieunhapView);
-		// container.remove(khachhangView);
-		// container.remove(phieuxuatView);
-		// phieuxuatView = new Viewphieuxuat().View();
-		// khachhangView = new Viewkhachhang().View();
-		// phieunhapView = new Viewphieunhap().View();
-		// container.add(phieunhapView, "phiếu nhập");
-		// container.add(phieuxuatView, "phiếu xuất");
-		// container.add(khachhangView, "khách hàng");
-	}
-
 	public float unformatPrice(String price) {
 		price = price.replace(".", "");
 		// System.out.println(price);
 		float priceUnformat = Float.parseFloat(price);
 		return priceUnformat;
 	}
-
-	// public float tongbill() {
-	// for (int i = 0; i < modelDataproduct.getRowCount(); i++) {
-	// Object[] rowData = new Object[2];
-	// sum = (int) modelDataproduct.getValueAt(i,0 ) ;
-
-	// // Bây giờ bạn có thể làm bất kỳ điều gì với dữ liệu trong rowData
-	// // Ví dụ: in ra giá trị của từng dòng
-	// System.out.println("Row " + i + ": " + Arrays.toString(rowData));
-	// }
-	// }
 }
