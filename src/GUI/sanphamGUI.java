@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -40,7 +41,10 @@ public class sanphamGUI extends JFrame {
 
 		setContentPane(sanphamFrame);
 		sanphamFrame.setLayout(new BorderLayout());
-		sanphamFrame.add(new menuChucNang().createmenuChucNang(), BorderLayout.NORTH);
+		menuChucNang chucnang =new menuChucNang();
+		sanphamFrame.add(chucnang.createmenuChucNang(), BorderLayout.NORTH);
+		
+		
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getVerticalScrollBar().setUnitIncrement(15);
@@ -79,8 +83,22 @@ public class sanphamGUI extends JFrame {
 			index++;
 		}
 
+
+		chucnang.add_btn.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ViewaddProduct view =new ViewaddProduct();
+				JDialog showView =view.addProduct();
+				showView.setVisible(true);
+			}
+
+			
+			 
+		});
 		return sanphamFrame;
 
 	}
+
 
 }

@@ -7,7 +7,7 @@ public class categoryDTO {
         return idProduct;
     }
 
-
+    
 
     public void setIdProduct(int idProduct) {
         this.idProduct = idProduct;

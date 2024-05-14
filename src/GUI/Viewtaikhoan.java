@@ -99,7 +99,7 @@ public class Viewtaikhoan extends JFrame {
         showInfo(listAccount.getListAccount());
 
         chucnang.bin_btn.addMouseListener(new taiKhoanController(this));
-        chucnang.see_btn.setEnabled(false);
+        chucnang.add_btn.setEnabled(false);
         chucnang.search_btn.addMouseListener(new taiKhoanController(this));
         chucnang.textField.addKeyListener(new taiKhoanController(this));
         chucnang.comboBox.addActionListener(new taiKhoanController(this));

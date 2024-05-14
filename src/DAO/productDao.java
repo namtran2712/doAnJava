@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 
 import DTO.particularProduct;
 import DTO.productDTO;
@@ -122,7 +123,7 @@ public class productDao implements daoInterface<productDTO> {
             String sql = "Select * from products join particular_products on particular_products.ID_PRODUCT=products.ID_PRODUCT "
                     +
                     "WHERE products.product_name ='" + name + "'";
-                    System.out.println(sql);
+            System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
             productDTO tmp;
             tmp = new productDTO();
@@ -150,6 +151,36 @@ public class productDao implements daoInterface<productDTO> {
         return null;
 
     }
+
+    public boolean addProduct(productDTO product,ArrayList <Integer> size,ArrayList<Float> price) {
+
+        Connection conc = databaseUtil.getConnection();
+        try {
+            Statement stmt = conc.createStatement();
+            String sql = "insert into products (ID_CATEGORY,ID_MATERIAL,PRODUCT_NAME,QUANTITY_SOLD,LINK_IMAGE)"
+                    + " values ("
+
+                    + product.getIdCategory() + ","
+                    + product.getIdMaterial() + ",'"
+                    + product.getName() + "',"
+                    + product.getQuantitySold() + ",'"
+                    + product.getLinkImg() + "'"
+                    + ");";
+            stmt.executeUpdate(sql);
+
+            for (int i=0;i<size.size();i++)
+            {
+                insertParticularProduct(product.getIdProduct(), size.get(i), price.get(i), 0);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+      
+        
+        return true;
+    }
+    
 
     public productDTO selectById(int id) {
         Connection conc = databaseUtil.getConnection();

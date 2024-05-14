@@ -98,7 +98,7 @@ public class Viewnhanvien extends JFrame {
 		viewPanel.add(panel, BorderLayout.CENTER);
 
 		chucnang.bin_btn.addMouseListener(new nhanVienController(this));
-		chucnang.see_btn.setEnabled(false);
+		chucnang.add_btn.setEnabled(false);
 		chucnang.search_btn.addMouseListener(new nhanVienController(this));
 		chucnang.textField.addKeyListener(new nhanVienController(this));
 		chucnang.comboBox.addActionListener(new nhanVienController(this));

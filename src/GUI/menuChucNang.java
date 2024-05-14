@@ -21,7 +21,7 @@ public class menuChucNang extends JFrame {
 	private JPanel contentPane;
 	public JTextField textField;
 	public JLabel bin_btn;
-	public JLabel see_btn;
+	public JLabel add_btn;
 	public JLabel search_btn;
 	public JComboBox<String> comboBox;
 
@@ -59,21 +59,21 @@ public class menuChucNang extends JFrame {
 		search_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
 		chucNang.add(search_btn);
 
-		see_btn = new JLabel("Thêm");
-		see_btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		see_btn.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-		see_btn.setIcon(new ImageIcon("src\\icon\\add.png"));
-		see_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		see_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
-		chucNang.add(see_btn);
+		add_btn = new JLabel("Thêm");
+		add_btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		add_btn.setFont(new Font("Times New Roman", Font.PLAIN, 17));
+		add_btn.setIcon(new ImageIcon("src\\icon\\add.png"));
+		add_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		add_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+		chucNang.add(add_btn);
 
-		JLabel excel_btn = new JLabel("Xuất excel");
-		excel_btn.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-		excel_btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		excel_btn.setIcon(new ImageIcon("src\\icon\\excel.png"));
-		excel_btn.setHorizontalTextPosition(SwingConstants.CENTER);
-		excel_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
-		chucNang.add(excel_btn);
+		// JLabel excel_btn = new JLabel("Xuất excel");
+		// excel_btn.setFont(new Font("Times New Roman", Font.PLAIN, 17));
+		// excel_btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		// excel_btn.setIcon(new ImageIcon("src\\icon\\excel.png"));
+		// excel_btn.setHorizontalTextPosition(SwingConstants.CENTER);
+		// excel_btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+		// chucNang.add(excel_btn);
 
 		JPanel filter = new JPanel();
 		menu_chucnang.add(filter);

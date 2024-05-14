@@ -3,7 +3,10 @@ package GUI;
 import java.awt.EventQueue;
 import javax.swing.*;
 
+import DAO.categoryDAO;
 import DAO.getDataForAddProduct;
+import DAO.materialDAO;
+import DTO.categoryDTO;
 import controller.addProductController;
 
 import java.awt.BorderLayout;
@@ -33,6 +36,8 @@ public class ViewaddProduct extends JFrame {
 	public ArrayList<JTextField> listQuantity;
 	public JTextField fieldQuantitySize;
 	private JLabel showProductImage;
+	public int idcate;
+	public int idmate;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -110,15 +115,15 @@ public class ViewaddProduct extends JFrame {
 		comboCategory.setPreferredSize(new Dimension(185, 30));
 		comboCategory.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboCategory.setBackground(Color.white);
-
+		
 		JLabel labelMaterial = new JLabel("Chất liệu");
 		labelMaterial.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		labelMaterial.setHorizontalAlignment(SwingConstants.CENTER);
 		panelInfo1.add(labelMaterial);
 		labelMaterial.setPreferredSize(new Dimension(150, 30));
-
+		
 		String[] materials = getDataForAddProduct.getMaterial();
-
+		
 		comboMaterial = new JComboBox<String>(materials);
 		comboMaterial.setSelectedItem(materials);
 		panelInfo1.add(comboMaterial);
@@ -126,7 +131,7 @@ public class ViewaddProduct extends JFrame {
 		comboMaterial.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		comboMaterial.setPreferredSize(new Dimension(185, 30));
 		comboMaterial.setBackground(Color.white);
-
+		
 		JLabel labelProductName = new JLabel("Tên sản phẩm");
 		labelProductName.setPreferredSize(new Dimension(150, 30));
 		labelProductName.setHorizontalAlignment(SwingConstants.CENTER);
@@ -279,9 +284,19 @@ public class ViewaddProduct extends JFrame {
 	}
 
 	public void changeImage(ImageIcon imageIcon) {
-		// ImageIcon imageIcon = new ImageIcon(showProduct.class.getResource(""));
 		Image scaledImage = imageIcon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
-		showProductImage.setIcon(new ImageIcon(scaledImage));
+		ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
+		showProductImage.setIcon(scaledImageIcon);
 		showProductImage.setHorizontalAlignment(SwingConstants.CENTER);
+	}
+	
+	public int getIdCategory ()
+    {
+		return  new categoryDAO().selectByName((String) comboCategory.getSelectedItem()).getIdProduct();
+	}
+	
+	public int getIdMaterial ()
+	{
+		return  new materialDAO().selectByName((String) comboMaterial.getSelectedItem()).getId();
 	}
 }

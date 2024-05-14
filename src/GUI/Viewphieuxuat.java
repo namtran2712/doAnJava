@@ -132,7 +132,7 @@ public class Viewphieuxuat extends JFrame {
 			}
 		});
 
-		chucnang.see_btn.setEnabled(false);
+		chucnang.add_btn.setEnabled(false);
 		chucnang.search_btn.setEnabled(false);
 
 		chucnang.comboBox.removeAllItems();
